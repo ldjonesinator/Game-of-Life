@@ -107,12 +107,13 @@ int main()
         return -1;
     }
 
-    glfwMakeContextCurrent(window);
-
-    glfwSwapInterval(1);
+    glfwMakeContextCurrent(window);  
 
     gladLoadGL();
+//    std::cout << glGetString(GL_VERSION) << std::endl;
     glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+
+    glfwSwapInterval(1);
 
     glClearColor(0.9f, 0.9f, 0.9f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
@@ -131,52 +132,50 @@ int main()
         2, 3, 0
     };
 
-    unsigned int VAO;
-    glGenVertexArrays(1, &VAO);
-    glBindVertexArray(VAO);
+    {
+        VertexArray va;
+        VertexBuffer vb(positions, 2 * 4 * sizeof(float));
 
-    VertexArray va;
-    VertexBuffer vb(positions, 2 * 4 * sizeof(float));
+        VertexBufferLayout layout;
+        layout.Push<float>(2);
+        va.AddBuffer(vb, layout);
 
-    VertexBufferLayout layout;
-    layout.Push<float>(2);
-    va.AddBuffer(vb, layout);
-
-    IndexBuffer ib(indices, 6);
+        IndexBuffer ib(indices, 6);
 
 
-    ShaderProgramSource source = ParseShaders("resources/shaders/Basic.shader");
-    unsigned int shader = CreateShader(source.VertexSource, source.FragmentSource);
-    glUseProgram(shader);
-
-    int location = glGetUniformLocation(shader, "u_Color");
-    glUniform4f(location, 0.92f, 0.68f, 0.20f, 1.0f);
-
-
-    glBindVertexArray(0);
-    glUseProgram(0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-
-    // main loop
-    while (!glfwWindowShouldClose(window)) {
-
-        glClear(GL_COLOR_BUFFER_BIT);
-        
+        ShaderProgramSource source = ParseShaders("resources/shaders/Basic.shader");
+        unsigned int shader = CreateShader(source.VertexSource, source.FragmentSource);
         glUseProgram(shader);
 
-        va.Bind();
-        ib.Bind();
+        int location = glGetUniformLocation(shader, "u_Color");
+        glUniform4f(location, 0.92f, 0.68f, 0.20f, 1.0f);
 
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 
-        glfwSwapBuffers(window);
+        glBindVertexArray(0);
+        glUseProgram(0);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
-        glfwPollEvents();
-    }
 
-    glDeleteProgram(shader);
+        // main loop
+        while (!glfwWindowShouldClose(window)) {
+
+            glClear(GL_COLOR_BUFFER_BIT);
+            
+            glUseProgram(shader);
+
+            va.Bind();
+            ib.Bind();
+
+            glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+
+            glfwSwapBuffers(window);
+
+            glfwPollEvents();
+        }
+    } // KEEPS THE objects out of scope
+
+//    glDeleteProgram(shader);
     glfwDestroyWindow(window);
     glfwTerminate();
     return 0;
