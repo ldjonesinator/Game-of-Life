@@ -11,6 +11,10 @@ struct ShaderProgramSource {
     std::string FragmentSource;
 };
 
+const unsigned int WINDOW_WIDTH = 1600;
+const unsigned int WINDOW_HEIGHT = 900;
+
+
 static ShaderProgramSource ParseShaders(const std::string& filepath)
 {
     std::ifstream stream(filepath);
@@ -81,18 +85,12 @@ static unsigned int CreateShader(const std::string& vertexShader, const std::str
     return program;
 }
 
-const unsigned int WINDOW_WIDTH = 1600;
-const unsigned int WINDOW_HEIGHT = 900;
 
 int main()
 {
     if (!glfwInit()) {
         return -1;
     }
-    // OpenGL version 4.6
-//    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-//    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
-//    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     
     GLFWwindow* window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Game of Life", NULL, NULL);
     if (window == NULL) {
@@ -114,10 +112,12 @@ int main()
         -0.15f, -0.25f,
         0.15f, -0.25f,
         0.15f, 0.25f,
-
-        0.15f, 0.25f,
         -0.15f, 0.25f,
-        -0.15f, -0.25f,
+    };
+
+    unsigned int indices[] = {
+        0, 1, 2,
+        2, 3, 0
     };
 
     unsigned int buffer;
@@ -128,6 +128,11 @@ int main()
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
 
+    unsigned int ibo;
+    glGenBuffers(1, &ibo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), indices, GL_STATIC_DRAW);
+
     ShaderProgramSource source = ParseShaders("resources/shaders/Basic.shader");
     unsigned int shader = CreateShader(source.VertexSource, source.FragmentSource);
     glUseProgram(shader);
@@ -136,7 +141,8 @@ int main()
     while (!glfwWindowShouldClose(window)) {
         glClear(GL_COLOR_BUFFER_BIT);
         
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+
         glfwSwapBuffers(window);
 
         glfwPollEvents();
