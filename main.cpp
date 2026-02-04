@@ -6,6 +6,10 @@
 #include <string>
 #include <sstream>
 
+//#include "vertex_buffer.h"
+#include "index_buffer.h"
+#include "vertex_array.h"
+
 struct ShaderProgramSource {
     std::string VertexSource;
     std::string FragmentSource;
@@ -91,8 +95,12 @@ int main()
     if (!glfwInit()) {
         return -1;
     }
+
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     
-    GLFWwindow* window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Game of Life", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "John Conway's Game of Life", NULL, NULL);
     if (window == NULL) {
         std::cout << "Failed to create window" << std::endl;
         glfwTerminate();
@@ -101,7 +109,7 @@ int main()
 
     glfwMakeContextCurrent(window);
 
-    glfwSwapInterval(2);
+    glfwSwapInterval(1);
 
     gladLoadGL();
     glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -123,18 +131,18 @@ int main()
         2, 3, 0
     };
 
-    unsigned int buffer;
-    glGenBuffers(1, &buffer);
-    glBindBuffer(GL_ARRAY_BUFFER, buffer);
-    glBufferData(GL_ARRAY_BUFFER, 2 * 6 * sizeof(float), positions, GL_STATIC_DRAW);
+    unsigned int VAO;
+    glGenVertexArrays(1, &VAO);
+    glBindVertexArray(VAO);
 
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+    VertexArray va;
+    VertexBuffer vb(positions, 2 * 4 * sizeof(float));
 
-    unsigned int ibo;
-    glGenBuffers(1, &ibo);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), indices, GL_STATIC_DRAW);
+    VertexBufferLayout layout;
+    layout.Push<float>(2);
+    va.AddBuffer(vb, layout);
+
+    IndexBuffer ib(indices, 6);
 
 
     ShaderProgramSource source = ParseShaders("resources/shaders/Basic.shader");
@@ -144,24 +152,24 @@ int main()
     int location = glGetUniformLocation(shader, "u_Color");
     glUniform4f(location, 0.92f, 0.68f, 0.20f, 1.0f);
 
-    float r = 0.0f;
-    float increment = 0.05f;
+
+    glBindVertexArray(0);
+    glUseProgram(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 
     // main loop
     while (!glfwWindowShouldClose(window)) {
+
         glClear(GL_COLOR_BUFFER_BIT);
         
-        glUniform4f(location, r, 0.68f, 0.20f, 1.0f);
+        glUseProgram(shader);
+
+        va.Bind();
+        ib.Bind();
+
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
-
-        if (r > 1.0f) {
-            increment = -0.05f;
-        } else if (r < 0.0f) {
-            increment = 0.05f;
-        }
-
-        r += increment;
 
         glfwSwapBuffers(window);
 
