@@ -101,12 +101,15 @@ int main()
 
     glfwMakeContextCurrent(window);
 
+    glfwSwapInterval(2);
+
     gladLoadGL();
     glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
 
     glClearColor(0.9f, 0.9f, 0.9f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
     glfwSwapBuffers(window);
+
 
     float positions[] = {
         -0.15f, -0.25f,
@@ -133,15 +136,32 @@ int main()
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), indices, GL_STATIC_DRAW);
 
+
     ShaderProgramSource source = ParseShaders("resources/shaders/Basic.shader");
     unsigned int shader = CreateShader(source.VertexSource, source.FragmentSource);
     glUseProgram(shader);
+
+    int location = glGetUniformLocation(shader, "u_Color");
+    glUniform4f(location, 0.92f, 0.68f, 0.20f, 1.0f);
+
+    float r = 0.0f;
+    float increment = 0.05f;
+
 
     // main loop
     while (!glfwWindowShouldClose(window)) {
         glClear(GL_COLOR_BUFFER_BIT);
         
+        glUniform4f(location, r, 0.68f, 0.20f, 1.0f);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+
+        if (r > 1.0f) {
+            increment = -0.05f;
+        } else if (r < 0.0f) {
+            increment = 0.05f;
+        }
+
+        r += increment;
 
         glfwSwapBuffers(window);
 
