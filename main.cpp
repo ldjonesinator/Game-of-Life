@@ -18,99 +18,99 @@ const unsigned int WINDOW_HEIGHT = 900;
 
 int main()
 {
-    if (!glfwInit()) {
-        return -1;
-    }
+	if (!glfwInit()) {
+		return -1;
+	}
 
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    
-    GLFWwindow* window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "John Conway's Game of Life", NULL, NULL);
-    if (window == NULL) {
-        std::cout << "Failed to create window" << std::endl;
-        glfwTerminate();
-        return -1;
-    }
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    glfwMakeContextCurrent(window);  
+	GLFWwindow* window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "John Conway's Game of Life", NULL, NULL);
+	if (window == NULL) {
+		std::cout << "Failed to create window" << std::endl;
+		glfwTerminate();
+		return -1;
+	}
 
-    gladLoadGL();
-//    std::cout << glGetString(GL_VERSION) << std::endl;
-    glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+	glfwMakeContextCurrent(window);
 
-    glfwSwapInterval(1);
+	gladLoadGL();
+	//    std::cout << glGetString(GL_VERSION) << std::endl;
+	glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
 
-    glClearColor(0.9f, 0.9f, 0.9f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
-    glfwSwapBuffers(window);
+	glfwSwapInterval(1);
 
-
-    float positions[] = {
-        -0.15f, -0.25f,
-        0.15f, -0.25f,
-        0.15f, 0.25f,
-        -0.15f, 0.25f,
-    };
-
-    unsigned int indices[] = {
-        0, 1, 2,
-        2, 3, 0
-    };
-
-    {
-        VertexArray va;
-        VertexBuffer vb(positions, 2 * 4 * sizeof(float));
-
-        VertexBufferLayout layout;
-        layout.Push<float>(2);
-        va.AddBuffer(vb, layout);
-
-        IndexBuffer ib(indices, 6);
+	glClearColor(0.9f, 0.9f, 0.9f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT);
+	glfwSwapBuffers(window);
 
 
-        Shader shader("resources/shaders/Basic.shader");
-        shader.Bind();
+	float positions[] = {
+		-0.15f, -0.25f,
+		0.15f, -0.25f,
+		0.15f, 0.25f,
+		-0.15f, 0.25f,
+	};
 
-        shader.SetUniform4f("u_Color", 0.92f, 0.68f, 0.20f, 1.0f);
+	unsigned int indices[] = {
+		0, 1, 2,
+		2, 3, 0
+	};
+
+	{
+		VertexArray va;
+		VertexBuffer vb(positions, 2 * 4 * sizeof(float));
+
+		VertexBufferLayout layout;
+		layout.Push<float>(2);
+		va.AddBuffer(vb, layout);
+
+		IndexBuffer ib(indices, 6);
 
 
-        va.Unbind();
-        shader.Unbind();
-        vb.Unbind();
-        ib.Unbind();
+		Shader shader("resources/shaders/Basic.shader");
+		shader.Bind();
 
-        float r = 0.0f;
-        float increment = 0.01f;
+		shader.SetUniform4f("u_Color", 0.92f, 0.68f, 0.20f, 1.0f);
 
-        // main loop
-        while (!glfwWindowShouldClose(window)) {
 
-            glClear(GL_COLOR_BUFFER_BIT);
-            
-            shader.Bind();
-            shader.SetUniform4f("u_Color", r, 0.68f, 0.20f, 1.0f);
+		va.Unbind();
+		shader.Unbind();
+		vb.Unbind();
+		ib.Unbind();
 
-            if (r > 1.0f) {
-                increment = -0.01f;
-            } else if (r < 0.0f) {
-                increment = 0.01f;
-            }
-            r += increment;
+		float r = 0.0f;
+		float increment = 0.01f;
 
-            va.Bind();
-            ib.Bind();
+		// main loop
+		while (!glfwWindowShouldClose(window)) {
 
-            glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+		    glClear(GL_COLOR_BUFFER_BIT);
 
-            glfwSwapBuffers(window);
+		    shader.Bind();
+		    shader.SetUniform4f("u_Color", r, 0.68f, 0.20f, 1.0f);
 
-            glfwPollEvents();
-        }
-    } // KEEPS THE objects out of scope
+		    if (r > 1.0f) {
+		        increment = -0.01f;
+		    } else if (r < 0.0f) {
+		        increment = 0.01f;
+		    }
+		    r += increment;
 
-//    glDeleteProgram(shader);
-    glfwDestroyWindow(window);
-    glfwTerminate();
-    return 0;
+		    va.Bind();
+		    ib.Bind();
+
+		    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+
+		    glfwSwapBuffers(window);
+
+		    glfwPollEvents();
+		}
+	} // KEEPS THE objects out of scope
+
+	//    glDeleteProgram(shader);
+	glfwDestroyWindow(window);
+	glfwTerminate();
+	return 0;
 }
