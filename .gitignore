@@ -1,3 +1,4 @@
-glad.c
 *.o
 *.out
+glad.c
+imgui.ini

@@ -9,6 +9,10 @@
 #include "vendor/glm/glm.hpp"
 #include "vendor/glm/gtc/matrix_transform.hpp"
 
+#include "vendor/imgui/imgui.h"
+#include "vendor/imgui/imgui_impl_glfw.h"
+#include "vendor/imgui/imgui_impl_opengl3.h"
+
 #include "renderer.h"
 #include "vertex_buffer.h"
 #include "index_buffer.h"
@@ -62,7 +66,8 @@ int main()
 		2, 3, 0
 	};
 
-	{
+	{ // KEEPS THE objects out of scope
+
 		VertexArray va;
 		VertexBuffer vb(positions, 2 * 4 * sizeof(float));
 
@@ -73,12 +78,12 @@ int main()
 		IndexBuffer ib(indices, 6);
 
 		glm::mat4 proj = glm::ortho(-8.0f, 8.0f, -4.5f, 4.5f, -1.0f, 1.0f);
+		glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0));
 
 		Shader shader("../res/shaders/Basic.shader");
 		shader.Bind();
 
 		shader.SetUniform4f("u_Color", 0.92f, 0.68f, 0.20f, 1.0f);
-		shader.SetUniformMat4f("u_MVP", proj);
 
 
 		va.Unbind();
@@ -88,16 +93,34 @@ int main()
 
 		Renderer renderer;
 
+		ImGui::CreateContext();
+		ImGuiIO& io = ImGui::GetIO(); (void)io;
+		ImGui_ImplGlfw_InitForOpenGL(window, true);
+		ImGui::StyleColorsLight();
+		ImGui_ImplOpenGL3_Init();
+
+		glm::vec3 translation(1, 1, 0);
+
 		float r = 0.0f;
 		float increment = 0.01f;
+
+	    bool show_fullscreen_window = false;
 
 		// main loop
 		while (!glfwWindowShouldClose(window)) {
 
 		    renderer.Clear();
 
+            ImGui_ImplOpenGL3_NewFrame();
+		    ImGui_ImplGlfw_NewFrame();
+		    ImGui::NewFrame();
+
+    		glm::mat4 model = glm::translate(glm::mat4(1.0f), translation);
+			glm::mat4 mvp = proj * view * model;
+
 		    shader.Bind();
 		    shader.SetUniform4f("u_Color", r, 0.68f, 0.20f, 1.0f);
+    		shader.SetUniformMat4f("u_MVP", mvp);
 
 			renderer.Draw(va, ib, shader);
 
@@ -108,12 +131,28 @@ int main()
 		    }
 		    r += increment;
 
+			{
+			    ImGui::Begin("View");
+
+			    ImGui::SliderFloat2("Translation", &translation.x, -8.0f, 8.0f);
+			    ImGui::Checkbox("Fullscreen", &show_fullscreen_window);
+
+			    ImGui::Text("Application average %.1f ms/frame (%.0f FPS)", 1000.0f / io.Framerate, io.Framerate);
+			    ImGui::End();
+			}
+
+			ImGui::Render();
+			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 		    glfwSwapBuffers(window);
 
 		    glfwPollEvents();
 		}
-	} // KEEPS THE objects out of scope
+	}
+
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
 
 	//    glDeleteProgram(shader);
 	glfwDestroyWindow(window);
