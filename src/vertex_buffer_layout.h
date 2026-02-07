@@ -1,5 +1,4 @@
-#ifndef VERTEX_BUFFER_LAYOUT_H
-#define VERTEX_BUFFER_LAYOUT_H
+#pragma once
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -59,5 +58,3 @@ inline void VertexBufferLayout::Push<unsigned char>(unsigned int count)
 	m_Elements.push_back({ GL_UNSIGNED_BYTE, count, GL_TRUE });
 	m_Stride += count *  VertexBufferElement::GetSizeOfType(GL_UNSIGNED_BYTE);
 }
-
-#endif // VERTEX_BUFFER_LAYOUT_H

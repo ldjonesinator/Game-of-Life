@@ -1,5 +1,4 @@
-#ifndef SHADER_H
-#define SHADER_H
+#pragma once
 
 #include <string>
 #include <unordered_map>
@@ -33,5 +32,3 @@ private:
 
     unsigned int GetUniformLocaiton(const std::string& name);
 };
-
-#endif // SHADER_H

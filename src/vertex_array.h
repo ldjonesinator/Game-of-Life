@@ -1,5 +1,4 @@
-#ifndef VERTEX_ARRAY_H
-#define VERTEX_ARRAY_H
+#pragma once
 
 #include "vertex_buffer.h"
 #include "vertex_buffer_layout.h"
@@ -17,5 +16,3 @@ public:
 	void Bind() const;
 	void Unbind() const;
 };
-
-#endif // VERTEX_ARRAY_H

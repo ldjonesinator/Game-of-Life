@@ -1,5 +1,4 @@
-#ifndef RENDERER_H
-#define RENDERER_H
+#pragma once
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -15,5 +14,3 @@ public:
 	void Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader) const;
 
 };
-
-#endif // RENDERER_H
