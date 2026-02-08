@@ -44,6 +44,9 @@ test_clear_colour.o: tests/test_clear_colour.cpp tests/test_clear_colour.h tests
 test_square.o: tests/test_square.cpp tests/test_square.h tests/test.h renderer.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
+test_square_batch.o: tests/test_square_batch.cpp tests/test_square_batch.h tests/test.h renderer.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
 # imgui stuff
 
 imgui.o: $(IMGUI_DIR)/imgui.cpp $(IMGUI_DIR)/imgui.h
@@ -68,7 +71,7 @@ imgui_widgets.o: $(IMGUI_DIR)/imgui_widgets.cpp
 # creating output file from object files
 $(EXEC): main.o glad.o renderer.o vertex_buffer.o index_buffer.o vertex_array.o shader.o \
 		imgui.o imgui_impl_glfw.o imgui_impl_opengl3.o imgui_draw.o imgui_tables.o imgui_widgets.o \
-		test.o test_clear_colour.o test_square.o
+		test.o test_clear_colour.o test_square.o test_square_batch.o
 	$(CC) $(CFLAGS) $^ $(GLFLAGS) -o $@ -lm
 
 # setting the run target

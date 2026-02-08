@@ -18,10 +18,10 @@ namespace test {
 		m_Translation(1, 1, 0)
 	{
 		float positions[] = {
-			-0.5f, -0.5f,
-			0.5f, -0.5f,
-			0.5f, 0.5f,
-			-0.5f, 0.5f,
+			-0.5f, -0.5f, 0.0f, 0.0f,  1.0f,  0.0f, 1.0f, 0.0f,
+			0.5f, -0.5f, 0.0f,  0.0f,  1.0f,  0.0f,  1.0f,  0.0f,
+			0.5f, 0.5f, 0.0f,  0.0f,  1.0f,  0.0f,  1.0f,  0.0f,
+			-0.5f, 0.5f, 0.0f,  0.0f,  1.0f,  0.0f,  1.0f,  0.0f
 		};
 
 		unsigned int indices[] = {
@@ -30,18 +30,18 @@ namespace test {
 		};
 
 		m_VAO = std::make_unique<VertexArray>();
-		m_VertexBuffer = std::make_unique<VertexBuffer>(positions, 2 * 4 * sizeof(float));
+		m_VertexBuffer = std::make_unique<VertexBuffer>(positions, 8 * 4 * sizeof(float), false);
 
 		VertexBufferLayout layout;
-		layout.Push<float>(2);
+		layout.Push<float>(3);
+		layout.Push<float>(4);
+		layout.Push<float>(1);
 		m_VAO->AddBuffer(*m_VertexBuffer, layout);
 
 		m_IndexBuffer  = std::make_unique<IndexBuffer>(indices, 6);
 
 		m_Shader = std::make_unique<Shader>("../res/shaders/Basic.shader");
 		m_Shader->Bind();
-
-		m_Shader->SetUniform4f("u_Color", 0.92f, 0.68f, 0.20f, 1.0f);
 
 	}
 
@@ -66,7 +66,6 @@ namespace test {
 		glm::mat4 mvp = m_Proj * m_View * model;
 
 	    m_Shader->Bind();
-	    m_Shader->SetUniform4f("u_Color", r, 0.68f, 0.20f, 1.0f);
 		m_Shader->SetUniformMat4f("u_MVP", mvp);
 
 	    if (r > 1.0f) {
@@ -83,12 +82,12 @@ namespace test {
 	{
 		static bool show_fullscreen_window = false;
 
-	    ImGui::Begin("View");
+//	    ImGui::Begin("View");
 
 	    ImGui::SliderFloat2("Translation", &m_Translation.x, 0.0f, 8.0f);
 	    ImGui::Checkbox("Fullscreen", &show_fullscreen_window);
 
 	    ImGui::Text("Application average %.1f ms/frame (%.0f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-	    ImGui::End();
+//	    ImGui::End();
 	}
 }

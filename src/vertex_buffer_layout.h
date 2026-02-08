@@ -5,6 +5,20 @@
 
 #include <vector>
 
+struct Vec3 {
+	float x, y, z;
+};
+
+struct Vec4 {
+	float x, y, z, w;
+};
+
+struct Vertex {
+	Vec3 position;
+	Vec4 colour;
+	float ID;
+};
+
 struct VertexBufferElement {
 	unsigned int type;
 	unsigned int count;
