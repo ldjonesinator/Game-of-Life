@@ -20,6 +20,7 @@
 #include "tests/test_clear_colour.h"
 #include "tests/test_square.h"
 #include "tests/test_square_batch.h"
+#include "tests/test_GOL.h"
 
 
 const unsigned int WINDOW_WIDTH = 1600;
@@ -112,7 +113,7 @@ int main()
 	std::cout << "\nVersion: " << glGetString(GL_VERSION) << "\n" << std::endl;
 	glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
 
-	glfwSwapInterval(4);
+	glfwSwapInterval(2);
 	glfwSwapBuffers(window);
 
 
@@ -134,6 +135,7 @@ int main()
 		testMenu->RegisterTest<test::TestClearColour>("Test Clear Colour");
 		testMenu->RegisterTest<test::TestSquare>("Test Square");
 		testMenu->RegisterTest<test::TestSquareBatch>("Test Batch Squares");
+		testMenu->RegisterTest<test::TestGOL>("John Conway's Game of Life");
 
 
 		// main loop
@@ -148,7 +150,11 @@ int main()
 		    if (currentTest) {
 		    	currentTest->OnUpdate(0.0f);
 		    	currentTest->OnRender();
-		    	ImGui::Begin("Test");
+
+		    	ImGui::SetNextWindowSize(ImVec2(350, 150), ImGuiCond_Once);
+				ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_Once);
+		    	ImGui::Begin("Programs");
+
 		    	if (currentTest != testMenu && ImGui::Button("<-")) {
 		    		delete currentTest;
 		    		currentTest = testMenu;

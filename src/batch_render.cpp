@@ -8,7 +8,7 @@ BatchRender::~BatchRender()
 {}
 
 
-static Vertex* CreateQuad(Vertex* target, float x, float y, float ID, Vec4 colour)
+static Vertex* CreateQuad(Vertex* target, float x, float y, float ID, glm::vec4 colour)
 {
 	target->position = { x, y, 0.0f };
 	target->colour = colour;
@@ -53,7 +53,7 @@ const unsigned int* BatchRender::GetIndices() const {
     return m_SquareIndices.data();
 }
 
-void BatchRender::CreateBatchRender(Vertex* vertices_p, Vec4 colour)
+void BatchRender::CreateBatchRender(Vertex* vertices_p, glm::vec4 colour)
 {
 	m_IndexCount = 0;
 	m_Buffer = vertices_p;
@@ -72,7 +72,7 @@ unsigned int BatchRender::GetSquareVertCount()
 	return VERTICES * (m_IndexCount / INDICES);
 }
 
-void BatchRender::UpdateFullColour(unsigned int i, Vec4 colour)
+void BatchRender::UpdateFullColour(unsigned int i, glm::vec4 colour)
 {
 	Vertex* temp_b = m_Buffer - (GetSquareVertCount() - i);
 	for (size_t i = 0; i < 4; i ++) {

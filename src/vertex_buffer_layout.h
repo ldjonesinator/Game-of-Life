@@ -3,19 +3,23 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include <../vendor/glm/glm.hpp>
+#include <../vendor/glm/vec3.hpp>
+#include <../vendor/glm/vec4.hpp>
+
 #include <vector>
 
-struct Vec3 {
-	float x, y, z;
-};
-
-struct Vec4 {
-	float x, y, z, w;
-};
+//struct Vec3 {
+//	float x, y, z;
+//};
+//
+//struct Vec4 {
+//	float x, y, z, w;
+//};
 
 struct Vertex {
-	Vec3 position;
-	Vec4 colour;
+	glm::vec3 position;
+	glm::vec4 colour;
 	float ID;
 };
 

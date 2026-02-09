@@ -31,10 +31,10 @@ public:
 
 	void CreateSquareVertIndices();
 	const unsigned int* GetIndices() const;
-	void CreateBatchRender(Vertex* vertices_p, Vec4 colour);
+	void CreateBatchRender(Vertex* vertices_p, glm::vec4 colour);
 
 	unsigned int GetSquareVertCount();
-	void UpdateFullColour(unsigned int i, Vec4 colour);
+	void UpdateFullColour(unsigned int i, glm::vec4 colour);
 
 	void SubData(unsigned int size, Vertex* vert_p);
 	void DrawBatchRender();
