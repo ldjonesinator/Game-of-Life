@@ -8,25 +8,25 @@ BatchRender::~BatchRender()
 {}
 
 
-static Vertex* CreateQuad(Vertex* target, float x, float y, float ID)
+static Vertex* CreateQuad(Vertex* target, float x, float y, float ID, Vec4 colour)
 {
 	target->position = { x, y, 0.0f };
-	target->colour = { 0.18f, 0.6f, 0.96f, 1.0f };
+	target->colour = colour;
 	target->ID = ID;
 	target++;
 
-	target->position = { x + SQUARE_SIZE, y, 0.0f };
-	target->colour = { 0.18f, 0.6f, 0.96f, 1.0f };
+	target->position = { x + SQR_SIZE, y, 0.0f };
+	target->colour = colour;
 	target->ID = ID;
 	target++;
 
-	target->position = { x + SQUARE_SIZE, y + SQUARE_SIZE, 0.0f };
-	target->colour = { 0.18f, 0.6f, 0.96f, 1.0f };
+	target->position = { x + SQR_SIZE, y + SQR_SIZE, 0.0f };
+	target->colour = colour;
 	target->ID = ID;
 	target++;
 
-	target->position = { x, y + SQUARE_SIZE, 0.0f };
-	target->colour = { 0.18f, 0.6f, 0.96f, 1.0f };
+	target->position = { x, y + SQR_SIZE, 0.0f };
+	target->colour = colour;
 	target->ID = ID;
 	target++;
 
@@ -53,14 +53,15 @@ const unsigned int* BatchRender::GetIndices() const {
     return m_SquareIndices.data();
 }
 
-void BatchRender::CreateBatchRender(Vertex* vertices_p)
+void BatchRender::CreateBatchRender(Vertex* vertices_p, Vec4 colour)
 {
 	m_IndexCount = 0;
 	m_Buffer = vertices_p;
 
 	for (unsigned int y = 0; y < ROWS; y++) {
 		for (unsigned int x = 0; x < COLS; x++) {
-			m_Buffer = CreateQuad(m_Buffer, x, y, (x + y) % 2);
+			m_Buffer = CreateQuad(m_Buffer, x * (SQR_SIZE + SQR_SPACE), y * (SQR_SIZE + SQR_SPACE),
+								(x + y) % 2, colour);
 			m_IndexCount += INDICES;
 		}
 	}

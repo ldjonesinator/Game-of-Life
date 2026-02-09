@@ -19,7 +19,7 @@ namespace test {
 	TestSquareBatch::TestSquareBatch()
 		: m_Proj(glm::ortho(0.0f, 8.0f, 0.0f, 4.5f, -1.0f, 1.0f)),
 		m_View(glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0))),
-		m_Translation(3, 2, 0)
+		m_Translation(0, 0, 0)
 	{
 
 		m_BatchRender.CreateSquareVertIndices();
@@ -53,7 +53,7 @@ namespace test {
 		static size_t square_i = 0;
 
 		std::array<Vertex, MAX_VERT> vertices;
-		m_BatchRender.CreateBatchRender(vertices.data());
+		m_BatchRender.CreateBatchRender(vertices.data(), {0.84f, 0.84f, 0.84f, 1.0f});
 
 		if (square_i >= m_BatchRender.GetSquareVertCount()) {
 			square_i = 0;
@@ -66,7 +66,7 @@ namespace test {
 
 		m_BatchRender.SubData(vertices.size() * sizeof(Vertex), vertices.data());
 
-		glClearColor(0.9f, 0.9f, 0.9f, 1.0f);
+		glClearColor(0.88f, 0.88f, 0.88f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		glm::mat4 model = glm::translate(glm::mat4(1.0f), m_Translation);

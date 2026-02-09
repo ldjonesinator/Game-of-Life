@@ -4,14 +4,18 @@
 
 #include "vertex_buffer_layout.h"
 
-#define ROWS 8
-#define COLS 9
+#define ROWS 45
+#define COLS 80
 #define TILES (ROWS * COLS)
+
 #define INDICES 6
 #define VERTICES 4
+
 #define MAX_VERT (TILES * VERTICES)
 #define MAX_INDX (TILES * INDICES)
-#define SQUARE_SIZE 0.98f
+
+#define SQR_SIZE 0.2f
+#define SQR_SPACE 0.02f
 
 class BatchRender
 {
@@ -27,7 +31,7 @@ public:
 
 	void CreateSquareVertIndices();
 	const unsigned int* GetIndices() const;
-	void CreateBatchRender(Vertex* vertices_p);
+	void CreateBatchRender(Vertex* vertices_p, Vec4 colour);
 
 	unsigned int GetSquareVertCount();
 	void UpdateFullColour(unsigned int i, Vec4 colour);

@@ -18,8 +18,11 @@ CPPFILES = $(foreach D, $(CODEDIRS), $(wildcard $(D)/*.cpp))
 CFILES = $(foreach D, $(CODEDIRS), $(wildcard $(D)/*.c))
 
 OBJECTS = $(patsubst %.cpp, %.o, $(CPPFILES)) $(patsubst %.c, %.o, $(CFILES))
-DEPFILES = $(patsubst %.cpp, %.d, $(CPPFILES)) $(patsubst %.c, %.d, $(CFILES))
+DEPFILES = $(OBJECTS:.o=.d)
 
+-include $(DEPFILES)
+
+NLINE = @echo ""
 DEL = rm
 
 
@@ -38,6 +41,8 @@ $(EXEC): $(OBJECTS)
 
 .PHONY: clean
 clean:
+	$(info Attempting to remove the program file, object files, and dependency files:)
+	$(NLINE)
 	-$(DEL) $(EXEC) $(OBJECTS) $(DEPFILES)
 
 
