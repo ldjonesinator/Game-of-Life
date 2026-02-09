@@ -9,6 +9,7 @@
 #include "../vertex_buffer_layout.h"
 #include "../index_buffer.h"
 #include "../shader.h"
+#include "../batch_render.h"
 
 
 namespace test {
@@ -32,6 +33,8 @@ namespace test {
 		glm::mat4 m_Proj, m_View;
 
 		glm::vec3 m_Translation;
+
+		BatchRender m_BatchRender;
 	};
 
 }

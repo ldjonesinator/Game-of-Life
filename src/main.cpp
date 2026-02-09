@@ -112,7 +112,7 @@ int main()
 	std::cout << "\nVersion: " << glGetString(GL_VERSION) << "\n" << std::endl;
 	glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
 
-	glfwSwapInterval(8);
+	glfwSwapInterval(4);
 	glfwSwapBuffers(window);
 
 
