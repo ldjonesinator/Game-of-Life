@@ -17,17 +17,17 @@ class Cells
 private:
 	std::array<unsigned int, TILES> m_Cells;
 	std::array<unsigned int, TILES> m_EmptyCells;
-	std::array<unsigned int, TILES> m_FChangeCells;
-	std::array<unsigned int, TILES> m_EChangeCells;
+	std::array<bool, TILES> m_FlaggedCells;
 	size_t m_IndexCount;
 public:
 	Cells();
 	~Cells();
 	void AddCell(size_t ID);
+	void UpdateFlaggedCells();
 	void SimulateCells();
 	void RenderCells(BatchRender* render);
 private:
-	bool CheckNeighbour(size_t ID, int x, int y, bool shouldAdd);
-	unsigned int CheckNeighbours(size_t ID, bool shouldAdd);
+	bool CheckNeighbour(size_t ID, int x, int y);
+	unsigned int CheckNeighbours(size_t ID);
 	void RemoveCell(size_t ID);
 };

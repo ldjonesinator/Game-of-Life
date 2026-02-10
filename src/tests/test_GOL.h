@@ -27,6 +27,8 @@ namespace test {
 
 		glm::vec3 m_Translation;
 
+		float m_MaxFrames;
+
 		BatchRender m_BatchRender;
 		Cells m_Cells;
 
