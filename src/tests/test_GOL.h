@@ -10,20 +10,13 @@
 #include "../index_buffer.h"
 #include "../shader.h"
 #include "../batch_render.h"
+#include "../cells.h"
 
 
 namespace test {
 
 	class TestGOL : public Test
 	{
-	public:
-		TestGOL();
-		~TestGOL();
-
-		void OnUpdate(float deltaTime) override;
-		void OnRender() override;
-		void OnImGuiRender() override;
-
 	private:
 		std::unique_ptr<VertexArray> m_VAO;
 		std::unique_ptr<VertexBuffer> m_VertexBuffer;
@@ -35,6 +28,14 @@ namespace test {
 		glm::vec3 m_Translation;
 
 		BatchRender m_BatchRender;
-	};
+		Cells m_Cells;
 
+	public:
+		TestGOL();
+		~TestGOL();
+
+		void OnUpdate(float deltaTime) override;
+		void OnRender() override;
+		void OnImGuiRender() override;
+	};
 }

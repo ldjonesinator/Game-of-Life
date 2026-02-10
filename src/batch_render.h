@@ -4,8 +4,8 @@
 
 #include "vertex_buffer_layout.h"
 
-#define ROWS 45
-#define COLS 80
+#define ROWS 25
+#define COLS 40
 #define TILES (ROWS * COLS)
 
 #define INDICES 6

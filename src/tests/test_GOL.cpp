@@ -24,6 +24,14 @@ namespace test {
 
 		m_BatchRender.CreateSquareVertIndices();
 
+		m_Cells.AddCell(300);
+		m_Cells.AddCell(340);
+		m_Cells.AddCell(260);
+		m_Cells.AddCell(341);
+		m_Cells.AddCell(259);
+
+
+
 		m_VAO = std::make_unique<VertexArray>();
 		m_VAO->Bind();
 		m_VertexBuffer = std::make_unique<VertexBuffer>(nullptr, MAX_VERT * sizeof(Vertex), true);
@@ -50,19 +58,18 @@ namespace test {
 
 	void TestGOL::OnRender()
 	{
-		static size_t square_i = 0;
+		static unsigned int frame = 0;
 
 		std::array<Vertex, MAX_VERT> vertices;
 		m_BatchRender.CreateBatchRender(vertices.data(), {0.84f, 0.84f, 0.84f, 1.0f});
 
-		if (square_i >= m_BatchRender.GetSquareVertCount()) {
-			square_i = 0;
+		m_Cells.RenderCells(&m_BatchRender);
+
+		if (frame > 1000) {
+			std::cout << "\nSTART\n" << std::endl;
+			m_Cells.SimulateCells();
+			frame = 0;
 		}
-
-		m_BatchRender.UpdateFullColour(square_i, { 1.0f, 0.2f, 0.4f, 1.0f});
-
-		square_i += VERTICES;
-
 
 		m_BatchRender.SubData(vertices.size() * sizeof(Vertex), vertices.data());
 
@@ -76,6 +83,8 @@ namespace test {
 		m_Shader->SetUniformMat4f("u_MVP", mvp);
 
 		m_BatchRender.DrawBatchRender();
+
+		frame ++;
 
 	}
 
