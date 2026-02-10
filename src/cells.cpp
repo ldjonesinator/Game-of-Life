@@ -17,15 +17,28 @@ Cells::Cells()
 Cells::~Cells()
 {}
 
+// returns true if the neighbour is on the other side of the screen
+static bool isOnOppositeEdge(int id, int nbour_id)
+{
+	if (id % COLS == 0) { // left edge
+		if (nbour_id % COLS == COLS - 1) {
+			return true;
+		}
+	} else if (id % COLS == COLS - 1) { // right edge
+		if (nbour_id % COLS == 0) {
+			return true;
+		}
+	}
+	return false;
+}
 
-// increases or decreases neighbour count for every neighbouring cell even if they are empty
 bool Cells::CheckNeighbour(size_t ID, int x, int y)
 {
     int base = static_cast<int>(ID);
     int nbour_id = base + x + (y * COLS);
 
-    if (nbour_id >= 0 && nbour_id < static_cast<int>(TILES) &&
-        static_cast<size_t>(nbour_id) != ID)
+    if (!isOnOppositeEdge(base, nbour_id) && nbour_id >= 0 &&
+    	nbour_id < static_cast<int>(TILES) && static_cast<size_t>(nbour_id) != ID)
     {
         m_FlaggedCells[nbour_id] = true;
         if (m_Cells[nbour_id] != 0) {
@@ -42,6 +55,7 @@ unsigned int Cells::CheckNeighbours(size_t ID)
 	for (int x = -1; x < 2; x++) {
 		for (int y = -1; y < 2; y++) {
 			if (x == 0 && y == 0) continue;
+
 			if (CheckNeighbour(ID, x, y)) {
 				count ++;
 			}
@@ -82,10 +96,8 @@ void Cells::UpdateFlaggedCells()
 		if (m_FlaggedCells[i]) {
 			if (m_Cells[i] != 0) {
 				m_Cells[i] = CheckNeighbours(i) + 1;
-//				std::cout << "Full: " << m_Cells[i] << " " << i << std::endl;
 			} else {
 				m_EmptyCells[i] = CheckNeighbours(i);
-//				std::cout << "Empty: " << m_EmptyCells[i] << " " << i << std::endl;
 			}
 		}
 		m_FlaggedCells[i] = false;
@@ -96,11 +108,9 @@ void Cells::SimulateCells()
 {
 	// remember that m_Cells contains the count of neighbours + 1 (itself)
 	for (size_t i = 0; i < TILES; i ++) {
-		if (m_EmptyCells[i] >= POPULATE) {
-			std::cout << "ADD: " << m_EmptyCells[i] << std::endl;
+		if (m_EmptyCells[i] == POPULATE) {
 			AddCell(i);
 		} else if (m_Cells[i] >= 1 && (m_Cells[i] >= (OVERPOP + 1) || m_Cells[i] <= (UNDERPOP + 1)) ) {
-			std::cout << "REMOVE " << (m_Cells[i] >= (OVERPOP + 1)) << (m_Cells[i] <= (UNDERPOP + 1)) << std::endl;
 			RemoveCell(i);
 		}
 	}

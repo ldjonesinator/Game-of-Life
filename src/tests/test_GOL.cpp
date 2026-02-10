@@ -79,7 +79,6 @@ namespace test {
 		m_Cells.RenderCells(&m_BatchRender);
 
 		if (frame > m_MaxFrames) {
-			std::cout << "\nSTART\n" << std::endl;
 			m_Cells.SimulateCells();
 			frame = 0.0f;
 		}
