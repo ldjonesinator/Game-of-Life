@@ -5,6 +5,8 @@
 
 #include <array>
 
+#define WINDOWED_SCALE 1.5f
+
 class Window
 {
 private:
@@ -18,11 +20,12 @@ private:
 	int m_xPos, m_yPos;
 
 public:
-	Window(float scale);
+	Window();
 	~Window();
 	void InitialiseWindow(float scale);
 	bool IsValid() const;
 	GLFWwindow* GetWindow() const;
 	std::array<int, 2> GetCurrentSize();
+	std::array<int, 2> GetMinSize();
 	void ToggleFullscreen();
 };

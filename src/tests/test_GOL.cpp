@@ -28,30 +28,23 @@ namespace test {
 	{
 
 		m_Window = window;
-		m_Events->Init(m_Window->GetWindow());
+		m_Events->Init(m_Window);
 
 		m_BatchRender.CreateSquareVertIndices();
 
-//		m_Cells.AddCell(300);
-//		m_Cells.AddCell(340);
-//		m_Cells.AddCell(260);
-//		m_Cells.AddCell(341);
-//		m_Cells.AddCell(259);
-
-		m_Cells.AddCell(410);
-		m_Cells.AddCell(450);
-		m_Cells.AddCell(490);
-		m_Cells.AddCell(530);
-		m_Cells.AddCell(411);
-		m_Cells.AddCell(453);
-		m_Cells.AddCell(489);
-		m_Cells.AddCell(531);
-		m_Cells.AddCell(412);
-		m_Cells.AddCell(452);
-		m_Cells.AddCell(529);
-		m_Cells.AddCell(532);
-
-		m_Cells.UpdateFlaggedCells();
+//		m_Cells.AddCell(410);
+//		m_Cells.AddCell(450);
+//		m_Cells.AddCell(490);
+//		m_Cells.AddCell(530);
+//		m_Cells.AddCell(411);
+//		m_Cells.AddCell(453);
+//		m_Cells.AddCell(489);
+//		m_Cells.AddCell(531);
+//		m_Cells.AddCell(412);
+//		m_Cells.AddCell(452);
+//		m_Cells.AddCell(529);
+//		m_Cells.AddCell(532);
+//		m_Cells.UpdateFlaggedCells();
 
 		m_VAO = std::make_unique<VertexArray>();
 		m_VAO->Bind();
@@ -82,18 +75,37 @@ namespace test {
 	{}
 
 
-	static void printMousePos(double x, double y)
+	static int GetPositionIndex(double x, double y, int x_res, int y_res)
 	{
-		std::cout << "Mouse X: " << x << " Mouse Y: " << y << std::endl;
+		static size_t prev_index = -1;
+		int size = (SQR_SIZE + SQR_SPACE);
+		int x_snap = ((int)(x / size) + 1) * size;
+		int y_snap = ((int)(y / size) + 1) * size;
+
+		int col_num = x_res / size;
+		int row_num = y_res / size;
+
+		size_t x_index = (col_num * x_snap) / x_res;
+		size_t y_index = (row_num * y_snap) / y_res;
+
+//		std::cout << "X: " << x_index << " Y: " << y_index << std::endl;
+		size_t index = x_index + y_index * COLS;
+		if (prev_index != index) {
+			prev_index = index;
+			return index;
+
+		}
+		return -1;
 	}
 
 	void TestGOL::OnRender()
 	{
 		static float frame = 0.0f;
+		static int index = -1;
 
 		std::array<int, 2> win_size = m_Window->GetCurrentSize();
-		m_Proj = glm::ortho(0.0f, (float)(win_size[0] / 200), 0.0f, (float)(win_size[1] / 200), -1.0f, 1.0f);
-//		std::cout << (float)(win_size[0] / 200) << std::endl;
+		m_Proj = glm::ortho(0.0f, (float)(win_size[0]), 0.0f, (float)(win_size[1]), -1.0f, 1.0f);
+//		std::cout << (win_size[0]) << " X " << (win_size[1]) << std::endl;
 
 		std::array<Vertex, MAX_VERT> vertices;
 		m_BatchRender.CreateBatchRender(vertices.data(), { 0.84f, 0.84f, 0.84f, 1.0f });
@@ -119,7 +131,16 @@ namespace test {
 		m_BatchRender.DrawBatchRender();
 
 		m_Events->EventChecks();
-		m_Events->LeftMouseDownEvent(printMousePos);
+		index = m_Events->LeftMouseDownEvent(GetPositionIndex);
+		if (index >= 0) {
+			m_Cells.AddCell(index);
+			m_Cells.UpdateFlaggedCells();
+		}
+		index = m_Events->RightMouseDownEvent(GetPositionIndex);
+		if (index >= 0) {
+			m_Cells.RemoveCell(index);
+			m_Cells.UpdateFlaggedCells();
+		}
 
 		frame ++;
 
@@ -129,7 +150,7 @@ namespace test {
 	{
 	    ImGui::Text("Full Cell Count: %ld", m_Cells.GetFullCellCount());
 
-	    ImGui::SliderFloat2("Translation", &m_Translation.x, -8.0f, 8.0f);
+	    ImGui::SliderFloat2("Translation", &m_Translation.x, -1600.0f, 0);
 	    ImGui::SliderFloat("Speed", &m_MaxFrames, FRAME_LOWER, FRAME_UPPER);
 
 	    ImGui::Checkbox("Pause", &m_ShouldPause);

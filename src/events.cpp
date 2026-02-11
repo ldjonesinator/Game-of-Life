@@ -7,37 +7,39 @@ Events::Events()
 Events::~Events()
 {}
 
-void Events::Init(GLFWwindow* window)
+void Events::Init(Window* window)
 {
 	m_Window = window;
-	glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+	glfwSetInputMode(m_Window->GetWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 }
 
 
 void Events::EventChecks()
 {
-	glfwGetCursorPos(m_Window, &m_MouseX, &m_MouseY);
+	glfwGetCursorPos(m_Window->GetWindow(), &m_MouseX, &m_MouseY);
 
 }
 
 // returns true if the button is down
-bool Events::LeftMouseDownEvent(void (*MousePressFncPtr)(double, double))
+int Events::LeftMouseDownEvent(int (*MousePressFncPtr)(double, double, int, int))
 {
-	int state = glfwGetMouseButton(m_Window, GLFW_MOUSE_BUTTON_LEFT);
+	std::array<int, 2> win_size = m_Window->GetCurrentSize();
+	int state = glfwGetMouseButton(m_Window->GetWindow(), GLFW_MOUSE_BUTTON_LEFT);
 	if (state == GLFW_PRESS) {
-		MousePressFncPtr(m_MouseX, m_MouseY);
-		return true;
+		// inverts the mouseY origin
+		return MousePressFncPtr(m_MouseX, win_size[1] - m_MouseY, win_size[0], win_size[1]);
 	}
-	return false;
+	return -2; // -2 means mouse was not pressed
 }
 
-// returns true if the button is down
-bool Events::RightMouseDownEvent(void (*MousePressFncPtr)(double, double))
+// returns the event output
+int Events::RightMouseDownEvent(int (*MousePressFncPtr)(double, double, int, int))
 {
-	int state = glfwGetMouseButton(m_Window, GLFW_MOUSE_BUTTON_RIGHT);
+	std::array<int, 2> win_size = m_Window->GetCurrentSize();
+	int state = glfwGetMouseButton(m_Window->GetWindow(), GLFW_MOUSE_BUTTON_RIGHT);
 	if (state == GLFW_PRESS) {
-		MousePressFncPtr(m_MouseX, m_MouseY);
-		return true;
+		// inverts the mouseY origin
+		return MousePressFncPtr(m_MouseX, win_size[1] - m_MouseY, win_size[0], win_size[1]);
 	}
-	return false;
+	return -2; // -2 means mouse was not pressed
 }

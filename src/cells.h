@@ -23,6 +23,7 @@ public:
 	Cells();
 	~Cells();
 	void AddCell(size_t ID);
+	void RemoveCell(size_t ID);
 	void UpdateFlaggedCells();
 	void SimulateCells();
 	void RenderCells(BatchRender* render, glm::vec4 colour);
@@ -30,5 +31,4 @@ public:
 private:
 	bool CheckNeighbour(size_t ID, int x, int y);
 	unsigned int CheckNeighbours(size_t ID);
-	void RemoveCell(size_t ID);
 };

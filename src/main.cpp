@@ -23,7 +23,7 @@
 
 int main()
 {
-	Window window(1.5f);
+	Window window;
 
 	if (!window.IsValid()) {
         std::cerr << "Window initialization failed." << std::endl;

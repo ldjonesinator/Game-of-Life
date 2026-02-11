@@ -4,8 +4,8 @@
 
 #include "vertex_buffer_layout.h"
 
-#define ROWS 50
-#define COLS 80
+#define ROWS 67
+#define COLS 117
 #define TILES (ROWS * COLS)
 
 #define INDICES 6
@@ -14,8 +14,8 @@
 #define MAX_VERT (TILES * VERTICES)
 #define MAX_INDX (TILES * INDICES)
 
-#define SQR_SIZE 0.2f
-#define SQR_SPACE 0.02f
+#define SQR_SIZE 20
+#define SQR_SPACE 2
 
 class BatchRender
 {

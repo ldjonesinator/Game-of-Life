@@ -38,7 +38,7 @@ namespace test {
 		ImGuiIO& m_IO;
 
 		float m_MaxFrames;
-		bool m_ShouldPause = false;
+		bool m_ShouldPause = true;
 		bool m_NextStep = false;
 
 		BatchRender m_BatchRender;

@@ -8,9 +8,9 @@
 #include "debug.h"
 
 
-Window::Window(float scale)
+Window::Window()
 {
-	InitialiseWindow(scale);
+	InitialiseWindow(WINDOWED_SCALE);
 }
 
 Window::~Window()
@@ -40,12 +40,13 @@ void Window::InitialiseWindow(float scale)
 	m_WinHeight = m_Mode->height / scale;
 
 	m_Window = glfwCreateWindow(m_WinWidth, m_WinHeight, "John Conway's Game of Life", NULL, NULL);
-	glfwGetWindowPos(m_Window, &m_xPos, &m_yPos);
+
 	if (m_Window == NULL) {
 		std::cout << "Failed to create window" << std::endl;
 		glfwTerminate();
 		return;
 	}
+	glfwGetWindowPos(m_Window, &m_xPos, &m_yPos);
 
 	glfwMakeContextCurrent(m_Window);
 	gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
@@ -76,6 +77,11 @@ std::array<int, 2> Window::GetCurrentSize()
 {
 	glfwGetFramebufferSize(m_Window, &m_CurWidth, &m_CurHeight);
 	return std::array<int, 2>{m_CurWidth, m_CurHeight};
+}
+
+std::array<int, 2> Window::GetMinSize()
+{
+	return std::array<int, 2>{m_WinWidth, m_WinHeight};
 }
 
 static void framebuffer_size_callback(GLFWwindow* window, int width, int height)
