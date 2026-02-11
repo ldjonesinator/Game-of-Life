@@ -20,6 +20,7 @@ public:
 
 	void Init(Window* window);
 	void EventChecks();
+	std::array<double, 2> GetMousePos();
 	int LeftMouseDownEvent(int (*MousePressFncPtr)(double, double, int, int));
 	int RightMouseDownEvent(int (*MousePressFncPtr)(double, double, int, int));
 };

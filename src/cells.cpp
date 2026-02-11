@@ -69,10 +69,12 @@ unsigned int Cells::CheckNeighbours(size_t ID)
 void Cells::AddCell(size_t ID)
 {
 	if (ID < TILES) {
-		CheckNeighbours(ID);
-		m_EmptyCells[ID] = 0;
-		m_Cells[ID] = 1;
-		m_IndexCount ++;
+		if (m_Cells[ID] == 0) {
+			CheckNeighbours(ID);
+			m_EmptyCells[ID] = 0;
+			m_Cells[ID] = 1;
+			m_IndexCount ++;
+		}
 	} else {
 		std::cout << "Cell index: " << ID << " out of range" << std::endl;
 	}
@@ -81,10 +83,12 @@ void Cells::AddCell(size_t ID)
 void Cells::RemoveCell(size_t ID)
 {
 	if (ID < TILES) {
-        CheckNeighbours(ID);
-        m_Cells[ID] = 0;
-        m_EmptyCells[ID] = 0;
-        m_IndexCount --;
+		if (m_Cells[ID] != 0) {
+		    CheckNeighbours(ID);
+		    m_Cells[ID] = 0;
+		    m_EmptyCells[ID] = 0;
+		    m_IndexCount --;
+		}
     } else {
 		std::cout << "Cell index: " << ID << " out of range" << std::endl;
 	}

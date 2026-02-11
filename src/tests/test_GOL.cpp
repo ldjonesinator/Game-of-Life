@@ -77,7 +77,6 @@ namespace test {
 
 	static int GetPositionIndex(double x, double y, int x_res, int y_res)
 	{
-		static size_t prev_index = -1;
 		int size = (SQR_SIZE + SQR_SPACE);
 		int x_snap = ((int)(x / size) + 1) * size;
 		int y_snap = ((int)(y / size) + 1) * size;
@@ -89,23 +88,16 @@ namespace test {
 		size_t y_index = (row_num * y_snap) / y_res;
 
 //		std::cout << "X: " << x_index << " Y: " << y_index << std::endl;
-		size_t index = x_index + y_index * COLS;
-		if (prev_index != index) {
-			prev_index = index;
-			return index;
-
-		}
-		return -1;
+		return x_index + y_index * COLS;
 	}
 
 	void TestGOL::OnRender()
 	{
 		static float frame = 0.0f;
-		static int index = -1;
+		static int index;
 
 		std::array<int, 2> win_size = m_Window->GetCurrentSize();
 		m_Proj = glm::ortho(0.0f, (float)(win_size[0]), 0.0f, (float)(win_size[1]), -1.0f, 1.0f);
-//		std::cout << (win_size[0]) << " X " << (win_size[1]) << std::endl;
 
 		std::array<Vertex, MAX_VERT> vertices;
 		m_BatchRender.CreateBatchRender(vertices.data(), { 0.84f, 0.84f, 0.84f, 1.0f });
@@ -131,6 +123,7 @@ namespace test {
 		m_BatchRender.DrawBatchRender();
 
 		m_Events->EventChecks();
+
 		index = m_Events->LeftMouseDownEvent(GetPositionIndex);
 		if (index >= 0) {
 			m_Cells.AddCell(index);
