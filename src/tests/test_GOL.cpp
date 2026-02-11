@@ -1,26 +1,32 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include <iostream>
 #include <stdlib.h>
+#include <array>
 
 #include "../vendor/glm/glm.hpp"
 #include "../vendor/glm/gtc/matrix_transform.hpp"
 
 #include "../vendor/imgui/imgui.h"
 
+#include "../window.h"
 #include "test_GOL.h"
 #include "../renderer.h"
 #include "../vertex_buffer_layout.h"
 
 
+
 namespace test {
 
 
-	TestGOL::TestGOL()
-		: m_Proj(glm::ortho(0.0f, 8.0f, 0.0f, 4.5f, -1.0f, 1.0f)),
-		m_View(glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0))),
-		m_Translation(0, 0, 0), m_MaxFrames(1000)
+	TestGOL::TestGOL(Window* window)
+		: m_View(glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0))),
+		m_Translation(0, 0, 0), m_IO(ImGui::GetIO()), m_MaxFrames(FRAME_UPPER),
+		m_CellColour(glm::vec4(1.0f, 0.72f, 0.2f, 1.0f))
 	{
+
+		m_Window = window;
 
 		m_BatchRender.CreateSquareVertIndices();
 
@@ -62,23 +68,31 @@ namespace test {
 
 	}
 
-	TestGOL::~TestGOL() {}
+	TestGOL::~TestGOL()
+	{
+		m_VAO->Unbind();
+		m_IndexBuffer->Unbind();
+		m_Shader->Unbind();
+	}
 
 
 	void TestGOL::OnUpdate(float deltaTime)
-	{
-	}
+	{}
 
 	void TestGOL::OnRender()
 	{
 		static float frame = 0.0f;
 
+		std::array<int, 2> win_size = m_Window->GetCurrentSize();
+		m_Proj = glm::ortho(0.0f, (float)(win_size[0] / 200), 0.0f, (float)(win_size[1] / 200), -1.0f, 1.0f);
+//		std::cout << (float)(win_size[0] / 200) << std::endl;
+
 		std::array<Vertex, MAX_VERT> vertices;
-		m_BatchRender.CreateBatchRender(vertices.data(), {0.84f, 0.84f, 0.84f, 1.0f});
+		m_BatchRender.CreateBatchRender(vertices.data(), { 0.84f, 0.84f, 0.84f, 1.0f });
 
-		m_Cells.RenderCells(&m_BatchRender);
+		m_Cells.RenderCells(&m_BatchRender, m_CellColour);
 
-		if (frame > m_MaxFrames) {
+		if ((frame > m_MaxFrames && !m_ShouldPause) || m_NextStep) {
 			m_Cells.SimulateCells();
 			frame = 0.0f;
 		}
@@ -102,16 +116,18 @@ namespace test {
 
 	void TestGOL::OnImGuiRender()
 	{
-		static bool show_fullscreen_window = false;
-
-//	    ImGui::Begin("View");
+	    ImGui::Text("Full Cell Count: %ld", m_Cells.GetFullCellCount());
 
 	    ImGui::SliderFloat2("Translation", &m_Translation.x, -8.0f, 8.0f);
-	    ImGui::SliderFloat("Speed", &m_MaxFrames, 20.0f, 1000.0f);
-	    ImGui::Checkbox("Fullscreen", &show_fullscreen_window);
+	    ImGui::SliderFloat("Speed", &m_MaxFrames, FRAME_LOWER, FRAME_UPPER);
+
+	    ImGui::Checkbox("Pause", &m_ShouldPause);
+	    ImGui::SameLine();
+	    m_NextStep = ImGui::Button("Next Step");
+	    ImGui::ColorEdit4("Cell Colour", &m_CellColour.x);
 
 	    ImGui::Text("Application average %.1f ms/frame (%.0f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-//	    ImGui::End();
+
 	}
 
 }

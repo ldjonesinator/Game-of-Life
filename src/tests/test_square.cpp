@@ -45,7 +45,12 @@ namespace test {
 
 	}
 
-	TestSquare::~TestSquare() {}
+	TestSquare::~TestSquare()
+	{
+		m_VAO->Unbind();
+		m_IndexBuffer->Unbind();
+		m_Shader->Unbind();
+	}
 
 	void TestSquare::OnUpdate(float deltaTime)
 	{
@@ -79,14 +84,8 @@ namespace test {
 
 	void TestSquare::OnImGuiRender()
 	{
-		static bool show_fullscreen_window = false;
-
-//	    ImGui::Begin("View");
-
 	    ImGui::SliderFloat2("Translation", &m_Translation.x, 0.0f, 8.0f);
-	    ImGui::Checkbox("Fullscreen", &show_fullscreen_window);
 
 	    ImGui::Text("Application average %.1f ms/frame (%.0f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-//	    ImGui::End();
 	}
 }

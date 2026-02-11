@@ -13,6 +13,10 @@
 #include "../cells.h"
 
 
+#define FRAME_LOWER 10.0f
+#define FRAME_UPPER 500.0f
+
+
 namespace test {
 
 	class TestGOL : public Test
@@ -23,17 +27,24 @@ namespace test {
 		std::unique_ptr<IndexBuffer> m_IndexBuffer;
 		std::unique_ptr<Shader> m_Shader;
 
+		Window* m_Window;
+
 		glm::mat4 m_Proj, m_View;
 
 		glm::vec3 m_Translation;
 
+		ImGuiIO& m_IO;
+
 		float m_MaxFrames;
+		bool m_ShouldPause = false;
+		bool m_NextStep = false;
 
 		BatchRender m_BatchRender;
 		Cells m_Cells;
+		glm::vec4 m_CellColour;
 
 	public:
-		TestGOL();
+		TestGOL(Window* window);
 		~TestGOL();
 
 		void OnUpdate(float deltaTime) override;

@@ -25,7 +25,8 @@ public:
 	void AddCell(size_t ID);
 	void UpdateFlaggedCells();
 	void SimulateCells();
-	void RenderCells(BatchRender* render);
+	void RenderCells(BatchRender* render, glm::vec4 colour);
+	size_t GetFullCellCount() const;
 private:
 	bool CheckNeighbour(size_t ID, int x, int y);
 	unsigned int CheckNeighbours(size_t ID);

@@ -118,11 +118,16 @@ void Cells::SimulateCells()
 	UpdateFlaggedCells();
 }
 
-void Cells::RenderCells(BatchRender* render)
+void Cells::RenderCells(BatchRender* render, glm::vec4 colour)
 {
 	for (size_t i = 0; i < TILES; i ++) {
 		if (m_Cells[i] != 0) {
-			render->UpdateFullColour(i * VERTICES, { 1.0f, 0.2f, 0.4f, 1.0f });
+			render->UpdateFullColour(i * VERTICES, colour);
 		}
 	}
+}
+
+size_t Cells::GetFullCellCount() const
+{
+	return m_IndexCount;
 }

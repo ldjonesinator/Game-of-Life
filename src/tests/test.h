@@ -5,6 +5,8 @@
 #include <vector>
 #include <functional>
 
+#include "../window.h"
+
 namespace test {
 
 	class Test
@@ -30,6 +32,13 @@ namespace test {
 		{
 			std::cout << "Registering test: " << name << std::endl;
 			m_Tests.push_back(std::make_pair(name, []() { return new T(); }));
+		}
+
+		template<typename T>
+		void RegisterTest(const std::string& name, Window* window)
+		{
+			std::cout << "Registering test: " << name << std::endl;
+			m_Tests.push_back(std::make_pair(name, [window]() { return new T(window); }));
 		}
 
 	private:
