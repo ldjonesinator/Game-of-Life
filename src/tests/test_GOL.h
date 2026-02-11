@@ -11,6 +11,7 @@
 #include "../shader.h"
 #include "../batch_render.h"
 #include "../cells.h"
+#include "../events.h"
 
 
 #define FRAME_LOWER 10.0f
@@ -28,6 +29,7 @@ namespace test {
 		std::unique_ptr<Shader> m_Shader;
 
 		Window* m_Window;
+		std::unique_ptr<Events> m_Events;
 
 		glm::mat4 m_Proj, m_View;
 

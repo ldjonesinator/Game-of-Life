@@ -21,12 +21,14 @@ namespace test {
 
 
 	TestGOL::TestGOL(Window* window)
-		: m_View(glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0))),
+		: m_Events(std::make_unique<Events>()),
+		m_View(glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0))),
 		m_Translation(0, 0, 0), m_IO(ImGui::GetIO()), m_MaxFrames(FRAME_UPPER),
 		m_CellColour(glm::vec4(1.0f, 0.72f, 0.2f, 1.0f))
 	{
 
 		m_Window = window;
+		m_Events->Init(m_Window->GetWindow());
 
 		m_BatchRender.CreateSquareVertIndices();
 
@@ -79,6 +81,12 @@ namespace test {
 	void TestGOL::OnUpdate(float deltaTime)
 	{}
 
+
+	static void printMousePos(double x, double y)
+	{
+		std::cout << "Mouse X: " << x << " Mouse Y: " << y << std::endl;
+	}
+
 	void TestGOL::OnRender()
 	{
 		static float frame = 0.0f;
@@ -109,6 +117,9 @@ namespace test {
 		m_Shader->SetUniformMat4f("u_MVP", mvp);
 
 		m_BatchRender.DrawBatchRender();
+
+		m_Events->EventChecks();
+		m_Events->LeftMouseDownEvent(printMousePos);
 
 		frame ++;
 

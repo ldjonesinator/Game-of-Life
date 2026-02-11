@@ -78,6 +78,11 @@ std::array<int, 2> Window::GetCurrentSize()
 	return std::array<int, 2>{m_CurWidth, m_CurHeight};
 }
 
+static void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
+    glViewport(0, 0, width, height);
+}
+
 void Window::ToggleFullscreen()
 {
 	static bool isWindowed = true;
@@ -87,6 +92,5 @@ void Window::ToggleFullscreen()
 		glfwSetWindowMonitor(m_Window, NULL, m_xPos, m_yPos, m_WinWidth, m_WinHeight, m_Mode->refreshRate);
 	}
 	isWindowed = !(isWindowed);
-	GetCurrentSize();
-	glViewport(0, 0, m_CurWidth, m_CurHeight);
+	glfwSetFramebufferSizeCallback(m_Window, framebuffer_size_callback);
 }
