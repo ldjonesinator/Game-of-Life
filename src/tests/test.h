@@ -5,7 +5,8 @@
 #include <vector>
 #include <functional>
 
-#include "../window.h"
+#include "window.h"
+#include "timestep.h"
 
 namespace test {
 
@@ -15,8 +16,7 @@ namespace test {
 		Test() {}
 		virtual ~Test() {}
 
-		virtual void OnUpdate(float deltaTime) {}
-		virtual void OnRender() {}
+		virtual void OnUpdate(Timestep ts) {}
 		virtual void OnImGuiRender() {}
 	};
 

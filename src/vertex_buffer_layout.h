@@ -3,11 +3,11 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include <../vendor/glm/glm.hpp>
-#include <../vendor/glm/vec3.hpp>
-#include <../vendor/glm/vec4.hpp>
-
 #include <vector>
+
+#include "vendor/glm/glm.hpp"
+#include "vendor/glm/vec3.hpp"
+#include "vendor/glm/vec4.hpp"
 
 //struct Vec3 {
 //	float x, y, z;

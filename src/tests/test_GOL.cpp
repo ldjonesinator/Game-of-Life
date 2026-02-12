@@ -5,15 +5,16 @@
 #include <stdlib.h>
 #include <array>
 
-#include "../vendor/glm/glm.hpp"
-#include "../vendor/glm/gtc/matrix_transform.hpp"
+#include "vendor/glm/glm.hpp"
+#include "vendor/glm/gtc/matrix_transform.hpp"
 
-#include "../vendor/imgui/imgui.h"
+#include "vendor/imgui/imgui.h"
 
-#include "../window.h"
 #include "test_GOL.h"
-#include "../renderer.h"
-#include "../vertex_buffer_layout.h"
+#include "window.h"
+#include "renderer.h"
+#include "vertex_buffer_layout.h"
+
 
 
 
@@ -21,14 +22,14 @@ namespace test {
 
 
 	TestGOL::TestGOL(Window* window)
-		: m_Events(std::make_unique<Events>()),
-		m_View(glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0))),
-		m_Translation(0, 0, 0), m_IO(ImGui::GetIO()), m_MaxFrames(FRAME_UPPER),
+		: m_Events(std::make_unique<Events>()), m_CameraControl(1.78f),
+		m_IO(ImGui::GetIO()), m_MaxFrames(FRAME_UPPER / 4),
 		m_CellColour(glm::vec4(1.0f, 0.72f, 0.2f, 1.0f))
 	{
 
 		m_Window = window;
 		m_Events->Init(m_Window);
+		m_CameraControl.Init(m_Window);
 
 		m_BatchRender.CreateSquareVertIndices();
 
@@ -58,7 +59,7 @@ namespace test {
 
 		m_IndexBuffer = std::make_unique<IndexBuffer>(m_BatchRender.GetIndices(), TILES * INDICES);
 
-		m_Shader = std::make_unique<Shader>("../res/shaders/Basic.shader");
+		m_Shader = std::make_unique<Shader>("res/shaders/Basic.shader");
 		m_Shader->Bind();
 
 	}
@@ -71,40 +72,25 @@ namespace test {
 	}
 
 
-	void TestGOL::OnUpdate(float deltaTime)
-	{}
-
-
-	static int GetPositionIndex(double x, double y, int x_res, int y_res)
+	void TestGOL::OnUpdate(Timestep ts)
 	{
-		int size = (SQR_SIZE + SQR_SPACE);
-		int x_snap = ((int)(x / size) + 1) * size;
-		int y_snap = ((int)(y / size) + 1) * size;
-
-		int col_num = x_res / size;
-		int row_num = y_res / size;
-
-		size_t x_index = (col_num * x_snap) / x_res;
-		size_t y_index = (row_num * y_snap) / y_res;
-
-//		std::cout << "X: " << x_index << " Y: " << y_index << std::endl;
-		return x_index + y_index * COLS;
-	}
-
-	void TestGOL::OnRender()
-	{
-		static float frame = 0.0f;
+		static float frame;
 		static int index;
 
-		std::array<int, 2> win_size = m_Window->GetCurrentSize();
-		m_Proj = glm::ortho(0.0f, (float)(win_size[0]), 0.0f, (float)(win_size[1]), -1.0f, 1.0f);
+		m_CameraControl.WindowResize();
+
+		// std::array<int, 2> win_size = m_Window->GetCurrentSize();
+		// m_UprBoundX = (float)(win_size[0]);
+		// m_UprBoundY = (float)(win_size[1]);
+		// m_Camera.SetProjMat(m_UprBoundX * m_LwrBndMult, m_UprBoundX, m_UprBoundY * m_LwrBndMult, m_UprBoundY);
+		// m_Camera.SetPosition(m_CameraPosition);
 
 		std::array<Vertex, MAX_VERT> vertices;
 		m_BatchRender.CreateBatchRender(vertices.data(), { 0.84f, 0.84f, 0.84f, 1.0f });
 
 		m_Cells.RenderCells(&m_BatchRender, m_CellColour);
 
-		if ((frame > m_MaxFrames && !m_ShouldPause) || m_NextStep) {
+		if ((frame > 1.0f / m_MaxFrames && !m_ShouldPause) || m_NextStep) {
 			m_Cells.SimulateCells();
 			frame = 0.0f;
 		}
@@ -114,36 +100,41 @@ namespace test {
 		glClearColor(0.88f, 0.88f, 0.88f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		glm::mat4 model = glm::translate(glm::mat4(1.0f), m_Translation);
-		glm::mat4 mvp = m_Proj * m_View * model;
+
+		// glm::mat4 model = glm::translate(glm::mat4(1.0f), m_Translation);
+		// glm::mat4 mvp = m_Camera.GetViewProjMatrix() * model;
 
 		m_Shader->Bind();
-		m_Shader->SetUniformMat4f("u_MVP", mvp);
+		m_Shader->SetUniformMat4f("u_MVP", m_CameraControl.GetCamera().GetViewProjMatrix());
 
 		m_BatchRender.DrawBatchRender();
 
 		m_Events->EventChecks();
 
-		index = m_Events->LeftMouseDownEvent(GetPositionIndex);
+		auto mouseFunc = [this](double x, double y, CameraControl& cc)
+		{ return m_BatchRender.GetPositionIndex(x, y, cc); };
+
+		index = m_Events->MouseDownEvent(mouseFunc, GLFW_MOUSE_BUTTON_LEFT, m_CameraControl);
 		if (index >= 0) {
 			m_Cells.AddCell(index);
 			m_Cells.UpdateFlaggedCells();
 		}
-		index = m_Events->RightMouseDownEvent(GetPositionIndex);
+		index = m_Events->MouseDownEvent(mouseFunc, GLFW_MOUSE_BUTTON_RIGHT, m_CameraControl);
 		if (index >= 0) {
 			m_Cells.RemoveCell(index);
 			m_Cells.UpdateFlaggedCells();
 		}
 
-		frame ++;
+		m_CameraControl.CamEvents(m_Events, ts);
 
+		frame += ts;
 	}
 
 	void TestGOL::OnImGuiRender()
 	{
 	    ImGui::Text("Full Cell Count: %ld", m_Cells.GetFullCellCount());
 
-	    ImGui::SliderFloat2("Translation", &m_Translation.x, -1600.0f, 0);
+//	    ImGui::SliderFloat2("Translation", &m_Translation.x, -1600.0f, 0);
 	    ImGui::SliderFloat("Speed", &m_MaxFrames, FRAME_LOWER, FRAME_UPPER);
 
 	    ImGui::Checkbox("Pause", &m_ShouldPause);

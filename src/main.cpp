@@ -8,6 +8,7 @@
 #include "vendor/imgui/imgui_impl_opengl3.h"
 
 #include "window.h"
+#include "timestep.h"
 
 #include "renderer.h"
 #include "vertex_buffer.h"
@@ -47,9 +48,15 @@ int main()
 		testMenu->RegisterTest<test::TestSquareBatch>("Test Batch Squares");
 		testMenu->RegisterTest<test::TestGOL>("John Conway's Game of Life", &window);
 
+		float m_LastFrameTime = 0.0f;
 
 		// main loop
 		while (!glfwWindowShouldClose(window.GetWindow())) {
+
+			float time = (float)glfwGetTime();
+			Timestep timestep = time - m_LastFrameTime;
+			m_LastFrameTime = time;
+
 			glClearColor(0.9f, 0.9f, 0.9f, 1.0f);
 		    renderer.Clear();
 
@@ -58,8 +65,7 @@ int main()
 		    ImGui::NewFrame();
 
 		    if (currentTest) {
-		    	currentTest->OnUpdate(0.0f);
-		    	currentTest->OnRender();
+		    	currentTest->OnUpdate(timestep);
 
 		    	ImGui::SetNextWindowSize(ImVec2(350, 200), ImGuiCond_Once);
 				ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_Once);

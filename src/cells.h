@@ -2,11 +2,13 @@
 
 #include <stdio.h>
 
-#include <../vendor/glm/glm.hpp>
-#include <../vendor/glm/vec3.hpp>
-#include <../vendor/glm/vec4.hpp>
+#include <vendor/glm/glm.hpp>
+#include <vendor/glm/vec3.hpp>
+#include <vendor/glm/vec4.hpp>
 
-#include "batch_render.h"
+#include "grid_config.h"
+
+class BatchRender;
 
 #define OVERPOP 4
 #define UNDERPOP 1

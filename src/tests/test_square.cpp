@@ -1,13 +1,13 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include "../vendor/glm/glm.hpp"
-#include "../vendor/glm/gtc/matrix_transform.hpp"
+#include "vendor/glm/glm.hpp"
+#include "vendor/glm/gtc/matrix_transform.hpp"
 
-#include "../vendor/imgui/imgui.h"
+#include "vendor/imgui/imgui.h"
 
 #include "test_square.h"
-#include "../renderer.h"
+#include "renderer.h"
 
 
 namespace test {
@@ -40,7 +40,7 @@ namespace test {
 
 		m_IndexBuffer = std::make_unique<IndexBuffer>(indices, 6);
 
-		m_Shader = std::make_unique<Shader>("../res/shaders/Basic.shader");
+		m_Shader = std::make_unique<Shader>("res/shaders/Basic.shader");
 		m_Shader->Bind();
 
 	}
@@ -52,11 +52,7 @@ namespace test {
 		m_Shader->Unbind();
 	}
 
-	void TestSquare::OnUpdate(float deltaTime)
-	{
-	}
-
-	void TestSquare::OnRender()
+	void TestSquare::OnUpdate(Timestep ts)
 	{
 		static float r = 0.0f;
 		static float increment = 0.01f;

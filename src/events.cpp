@@ -1,5 +1,7 @@
 #include "events.h"
 
+#include <iostream>
+
 
 Events::Events()
 {}
@@ -10,7 +12,8 @@ Events::~Events()
 void Events::Init(Window* window)
 {
 	m_Window = window;
-	glfwSetInputMode(m_Window->GetWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+	GLFWwindow* win = m_Window->GetWindow();
+	glfwSetWindowUserPointer(win, this);
 }
 
 
@@ -27,25 +30,36 @@ std::array<double, 2> Events::GetMousePos()
 }
 
 // returns true if the button is down
-int Events::LeftMouseDownEvent(int (*MousePressFncPtr)(double, double, int, int))
+int Events::MouseDownEvent(std::function<int(double, double, CameraControl&)> MouseFunc, int btn, CameraControl& c_ctrl)
 {
-	std::array<int, 2> win_size = m_Window->GetCurrentSize();
-	int state = glfwGetMouseButton(m_Window->GetWindow(), GLFW_MOUSE_BUTTON_LEFT);
+	int state = glfwGetMouseButton(m_Window->GetWindow(), btn);
 	if (state == GLFW_PRESS) {
 		// inverts the mouseY origin
-		return MousePressFncPtr(m_MouseX, m_MouseY, win_size[0], win_size[1]);
+		return MouseFunc(m_MouseX, m_MouseY, c_ctrl);
 	}
 	return -2; // -2 means mouse was not pressed
 }
 
-// returns the event output
-int Events::RightMouseDownEvent(int (*MousePressFncPtr)(double, double, int, int))
+void Events::scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-	std::array<int, 2> win_size = m_Window->GetCurrentSize();
-	int state = glfwGetMouseButton(m_Window->GetWindow(), GLFW_MOUSE_BUTTON_RIGHT);
-	if (state == GLFW_PRESS) {
-		// inverts the mouseY origin
-		return MousePressFncPtr(m_MouseX, m_MouseY, win_size[0], win_size[1]);
+    Events* events = static_cast<Events*>(glfwGetWindowUserPointer(window));
+
+    if (events)
+        events->m_Scroll = yoffset;
+}
+
+void Events::MouseScrollEvent(std::function<void(int)> ScrollFunc)
+{
+	glfwSetScrollCallback(m_Window->GetWindow(), scroll_callback);
+	ScrollFunc(m_Scroll);
+	m_Scroll = 0;
+}
+
+bool Events::KeyDownEvent(std::function<void(bool, int, Timestep)> KeyFunc, int key, int direction, Timestep ts)
+{
+	if (glfwGetKey(m_Window->GetWindow(), key) == GLFW_PRESS) {
+		KeyFunc(key == KEY_LEFT || key == KEY_RIGHT, direction, ts);
+		return true;
 	}
-	return -2; // -2 means mouse was not pressed
+	return false;
 }

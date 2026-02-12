@@ -3,14 +3,14 @@
 
 #include <stdlib.h>
 
-#include "../vendor/glm/glm.hpp"
-#include "../vendor/glm/gtc/matrix_transform.hpp"
+#include "vendor/glm/glm.hpp"
+#include "vendor/glm/gtc/matrix_transform.hpp"
 
-#include "../vendor/imgui/imgui.h"
+#include "vendor/imgui/imgui.h"
 
 #include "test_square_batch.h"
-#include "../renderer.h"
-#include "../vertex_buffer_layout.h"
+#include "renderer.h"
+#include "vertex_buffer_layout.h"
 
 
 namespace test {
@@ -36,7 +36,7 @@ namespace test {
 
 		m_IndexBuffer = std::make_unique<IndexBuffer>(m_BatchRender.GetIndices(), TILES * INDICES);
 
-		m_Shader = std::make_unique<Shader>("../res/shaders/Basic.shader");
+		m_Shader = std::make_unique<Shader>("res/shaders/Basic.shader");
 		m_Shader->Bind();
 
 	}
@@ -49,11 +49,7 @@ namespace test {
 	}
 
 
-	void TestSquareBatch::OnUpdate(float deltaTime)
-	{
-	}
-
-	void TestSquareBatch::OnRender()
+	void TestSquareBatch::OnUpdate(Timestep ts)
 	{
 		static size_t square_i = 0;
 
@@ -81,7 +77,6 @@ namespace test {
 		m_Shader->SetUniformMat4f("u_MVP", mvp);
 
 		m_BatchRender.DrawBatchRender();
-
 	}
 
 	void TestSquareBatch::OnImGuiRender()

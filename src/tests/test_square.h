@@ -4,11 +4,11 @@
 
 #include "test.h"
 
-#include "../vertex_array.h"
-#include "../vertex_buffer.h"
-#include "../vertex_buffer_layout.h"
-#include "../index_buffer.h"
-#include "../shader.h"
+#include "vertex_array.h"
+#include "vertex_buffer.h"
+#include "vertex_buffer_layout.h"
+#include "index_buffer.h"
+#include "shader.h"
 
 
 namespace test {
@@ -19,8 +19,7 @@ namespace test {
 		TestSquare();
 		~TestSquare();
 
-		void OnUpdate(float deltaTime) override;
-		void OnRender() override;
+		void OnUpdate(Timestep ts) override;
 		void OnImGuiRender() override;
 
 	private:

@@ -1,4 +1,4 @@
-#include "../vendor/imgui/imgui.h"
+#include "vendor/imgui/imgui.h"
 
 #include "test.h"
 

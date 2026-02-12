@@ -10,8 +10,7 @@ namespace test {
 		TestClearColour();
 		~TestClearColour();
 
-		void OnUpdate(float deltaTime) override;
-		void OnRender() override;
+		void OnUpdate(Timestep ts) override;
 		void OnImGuiRender() override;
 
 	private:

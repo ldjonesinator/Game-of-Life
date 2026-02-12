@@ -1,4 +1,6 @@
+#include "vendor/glm/vec3.hpp"
 #include "batch_render.h"
+#include "camera_control.h"
 
 BatchRender::BatchRender()
 	: m_SquareIndicesFormat{0, 1, 2, 2, 3, 0}
@@ -79,6 +81,21 @@ void BatchRender::UpdateFullColour(unsigned int i, glm::vec4 colour)
 		temp_b->colour = colour;
 		temp_b ++;
 	}
+}
+
+int BatchRender::GetPositionIndex(double x, double y, CameraControl& c_ctrl)
+{
+    glm::vec3 cam_pos = c_ctrl.GetCameraPosition();
+    float zoom = c_ctrl.GetZoomLevel();
+    int size = SQR_SIZE + SQR_SPACE;
+
+    float worldX = (x * zoom) + cam_pos.x;
+    float worldY = (y * zoom) + cam_pos.y;
+
+    int x_index = (int)(worldX / size);
+    int y_index = (int)(worldY / size);
+
+    return x_index + y_index * COLS;
 }
 
 void BatchRender::SubData(unsigned int size, Vertex* vert_p)

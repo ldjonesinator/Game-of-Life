@@ -1,11 +1,12 @@
 EXEC = main.out
 
-GLM_DIR = vendor/glm
-IMGUI_DIR = vendor/imgui
-TEST_DIR = tests
+SOURCE_DIR = src
+GLM_DIR = $(SOURCE_DIR)/vendor/glm
+IMGUI_DIR = $(SOURCE_DIR)/vendor/imgui
+TEST_DIR = $(SOURCE_DIR)/tests
 
-CODEDIRS = . $(IMGUI_DIR) $(TEST_DIR)
-INCDIRS = . $(IMGUI_DIR) $(TEST_DIR)
+CODEDIRS = $(SOURCE_DIR) $(IMGUI_DIR) $(GLM_DIR) $(TEST_DIR)
+INCDIRS = $(SOURCE_DIR) $(IMGUI_DIR) $(GLM_DIR) $(TEST_DIR)
 
 CC = g++
 OPT = -O0

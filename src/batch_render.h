@@ -3,19 +3,11 @@
 #include <array>
 
 #include "vertex_buffer_layout.h"
+#include "grid_config.h"
 
-#define ROWS 67
-#define COLS 117
-#define TILES (ROWS * COLS)
 
-#define INDICES 6
-#define VERTICES 4
+class CameraControl;
 
-#define MAX_VERT (TILES * VERTICES)
-#define MAX_INDX (TILES * INDICES)
-
-#define SQR_SIZE 20
-#define SQR_SPACE 2
 
 class BatchRender
 {
@@ -35,6 +27,7 @@ public:
 
 	unsigned int GetSquareVertCount();
 	void UpdateFullColour(unsigned int i, glm::vec4 colour);
+	int GetPositionIndex(double x, double y, CameraControl& c_ctrl);
 
 	void SubData(unsigned int size, Vertex* vert_p);
 	void DrawBatchRender();

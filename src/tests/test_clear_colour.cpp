@@ -1,7 +1,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include "../vendor/imgui/imgui.h"
+#include "vendor/imgui/imgui.h"
 
 #include "test_clear_colour.h"
 
@@ -12,11 +12,7 @@ namespace test {
 
 	TestClearColour::~TestClearColour() {}
 
-	void TestClearColour::OnUpdate(float deltaTime)
-	{
-	}
-
-	void TestClearColour::OnRender()
+	void TestClearColour::OnUpdate(Timestep ts)
 	{
 		glClearColor(m_ClearColour[0], m_ClearColour[1], m_ClearColour[2], m_ClearColour[3]);
 		glClear(GL_COLOR_BUFFER_BIT);

@@ -4,18 +4,20 @@
 
 #include "test.h"
 
-#include "../vertex_array.h"
-#include "../vertex_buffer.h"
-#include "../vertex_buffer_layout.h"
-#include "../index_buffer.h"
-#include "../shader.h"
-#include "../batch_render.h"
-#include "../cells.h"
-#include "../events.h"
+#include "vertex_array.h"
+#include "vertex_buffer.h"
+#include "vertex_buffer_layout.h"
+#include "index_buffer.h"
+#include "shader.h"
+#include "batch_render.h"
+#include "cells.h"
+#include "events.h"
+#include "camera.h"
+#include "camera_control.h"
 
 
-#define FRAME_LOWER 10.0f
-#define FRAME_UPPER 500.0f
+#define FRAME_LOWER 0.0f
+#define FRAME_UPPER 50.0f
 
 
 namespace test {
@@ -31,9 +33,7 @@ namespace test {
 		Window* m_Window;
 		std::unique_ptr<Events> m_Events;
 
-		glm::mat4 m_Proj, m_View;
-
-		glm::vec3 m_Translation;
+		CameraControl m_CameraControl;
 
 		ImGuiIO& m_IO;
 
@@ -49,8 +49,12 @@ namespace test {
 		TestGOL(Window* window);
 		~TestGOL();
 
-		void OnUpdate(float deltaTime) override;
-		void OnRender() override;
+		void OnUpdate(Timestep ts) override;
+
 		void OnImGuiRender() override;
+
+	private:
+		int GetPositionIndex(double x, double y, int x_res, int y_res);
+		void MoveCamera(bool isHorz, int direction, Timestep ts);
 	};
 }

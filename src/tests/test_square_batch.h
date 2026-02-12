@@ -4,12 +4,12 @@
 
 #include "test.h"
 
-#include "../vertex_array.h"
-#include "../vertex_buffer.h"
-#include "../vertex_buffer_layout.h"
-#include "../index_buffer.h"
-#include "../shader.h"
-#include "../batch_render.h"
+#include "vertex_array.h"
+#include "vertex_buffer.h"
+#include "vertex_buffer_layout.h"
+#include "index_buffer.h"
+#include "shader.h"
+#include "batch_render.h"
 
 
 namespace test {
@@ -20,8 +20,7 @@ namespace test {
 		TestSquareBatch();
 		~TestSquareBatch();
 
-		void OnUpdate(float deltaTime) override;
-		void OnRender() override;
+		void OnUpdate(Timestep ts) override;
 		void OnImGuiRender() override;
 
 	private:

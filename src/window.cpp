@@ -56,6 +56,7 @@ void Window::InitialiseWindow(float scale)
 	std::cout << "\nVersion: " << glGetString(GL_VERSION) << "\n" << std::endl;
 	glViewport(0, 0, m_WinWidth, m_WinHeight);
 
+	// VSync is 1
 	glfwSwapInterval(1);
 	glfwSwapBuffers(m_Window);
 
