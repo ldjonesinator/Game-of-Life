@@ -18,8 +18,8 @@ class CameraControl
 private:
     Window* m_Window;
 
-    glm::vec3 m_CameraPosition = { 0.0f, 0.0f, 0.0f };
-    float m_CameraSpeed = 500.0f;
+    glm::vec3 m_CameraPosition = { WORLD_X / 2, WORLD_Y / 2, 0.0f };
+    float m_CameraSpeed = 1000.0f;
 
     float m_ResX;
     float m_ResY;
@@ -47,6 +47,7 @@ public:
     float GetZoomLevel() { return m_ZoomLevel; }
 
 private:
+    void CheckCameraBounds();
     void MoveCamera(bool isHorz, int direction, Timestep ts);
     void ZoomCamera(int zoomLevel);
 };

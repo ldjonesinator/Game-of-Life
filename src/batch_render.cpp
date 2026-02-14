@@ -86,11 +86,12 @@ void BatchRender::UpdateFullColour(unsigned int i, glm::vec4 colour)
 int BatchRender::GetPositionIndex(double x, double y, CameraControl& c_ctrl)
 {
     glm::vec3 cam_pos = c_ctrl.GetCameraPosition();
+	glm::vec2 res = c_ctrl.GetResolution();
     float zoom = c_ctrl.GetZoomLevel();
     int size = SQR_SIZE + SQR_SPACE;
 
-    float worldX = (x * zoom) + cam_pos.x;
-    float worldY = (y * zoom) + cam_pos.y;
+    float worldX = ((x - res.x / 2) * zoom) + cam_pos.x;
+    float worldY = ((y - res.y / 2) * zoom) + cam_pos.y;
 
     int x_index = (int)(worldX / size);
     int y_index = (int)(worldY / size);

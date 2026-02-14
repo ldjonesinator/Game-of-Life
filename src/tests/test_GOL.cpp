@@ -79,12 +79,6 @@ namespace test {
 
 		m_CameraControl.WindowResize();
 
-		// std::array<int, 2> win_size = m_Window->GetCurrentSize();
-		// m_UprBoundX = (float)(win_size[0]);
-		// m_UprBoundY = (float)(win_size[1]);
-		// m_Camera.SetProjMat(m_UprBoundX * m_LwrBndMult, m_UprBoundX, m_UprBoundY * m_LwrBndMult, m_UprBoundY);
-		// m_Camera.SetPosition(m_CameraPosition);
-
 		std::array<Vertex, MAX_VERT> vertices;
 		m_BatchRender.CreateBatchRender(vertices.data(), { 0.84f, 0.84f, 0.84f, 1.0f });
 
