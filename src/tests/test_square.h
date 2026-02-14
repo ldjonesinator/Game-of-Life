@@ -4,11 +4,11 @@
 
 #include "test.h"
 
-#include "vertex_array.h"
-#include "vertex_buffer.h"
-#include "vertex_buffer_layout.h"
-#include "index_buffer.h"
-#include "shader.h"
+#include "engine/vertex_array.h"
+#include "engine/vertex_buffer.h"
+#include "engine/vertex_buffer_layout.h"
+#include "engine/index_buffer.h"
+#include "engine/shader.h"
 
 
 namespace test {

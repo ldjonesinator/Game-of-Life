@@ -6,7 +6,7 @@
 #include <string>
 #include <sstream>
 
-#include "shader.h"
+#include "engine/shader.h"
 
 
 Shader::Shader(const std::string& filepath)

@@ -1,6 +1,6 @@
 #include "vendor/glm/vec3.hpp"
-#include "batch_render.h"
-#include "camera_control.h"
+#include "engine/batch_render.h"
+#include "engine/camera_control.h"
 
 BatchRender::BatchRender()
 	: m_SquareIndicesFormat{0, 1, 2, 2, 3, 0}

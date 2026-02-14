@@ -7,19 +7,18 @@
 #include "vendor/imgui/imgui_impl_glfw.h"
 #include "vendor/imgui/imgui_impl_opengl3.h"
 
-#include "window.h"
-#include "timestep.h"
+#include "GOL.h"
 
-#include "renderer.h"
-#include "vertex_buffer.h"
-#include "index_buffer.h"
-#include "vertex_array.h"
-#include "shader.h"
+#include "engine/window.h"
+#include "engine/timestep.h"
 
-#include "tests/test_clear_colour.h"
-#include "tests/test_square.h"
-#include "tests/test_square_batch.h"
-#include "tests/test_GOL.h"
+#include "engine/renderer.h"
+#include "engine/vertex_buffer.h"
+#include "engine/index_buffer.h"
+#include "engine/vertex_array.h"
+#include "engine/shader.h"
+
+
 
 
 int main()
@@ -39,14 +38,7 @@ int main()
 		ImGui::StyleColorsLight();
 		ImGui_ImplOpenGL3_Init();
 
-		test::Test* currentTest = nullptr;
-		test::TestMenu* testMenu = new test::TestMenu(currentTest);
-		currentTest = testMenu;
-
-		testMenu->RegisterTest<test::TestClearColour>("Test Clear Colour");
-		testMenu->RegisterTest<test::TestSquare>("Test Square");
-		testMenu->RegisterTest<test::TestSquareBatch>("Test Batch Squares");
-		testMenu->RegisterTest<test::TestGOL>("John Conway's Game of Life", &window);
+		GOL game(&window);
 
 		float m_LastFrameTime = 0.0f;
 
@@ -64,30 +56,23 @@ int main()
 		    ImGui_ImplGlfw_NewFrame();
 		    ImGui::NewFrame();
 
-		    if (currentTest) {
-		    	currentTest->OnUpdate(timestep);
+			
 
-		    	ImGui::SetNextWindowSize(ImVec2(350, 200), ImGuiCond_Once);
-				ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_Once);
-		    	ImGui::Begin("Tools");
+			game.OnUpdate(timestep);
 
-		    	if (currentTest != testMenu && ImGui::Button("<-")) {
-		    		delete currentTest;
-		    		currentTest = testMenu;
-		    	}
+			ImGui::SetNextWindowSize(ImVec2(350, 180), ImGuiCond_Once);
+			ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_Once);
+			ImGui::Begin("Tools");
+			game.OnImGuiRender();
 
-		    	currentTest->OnImGuiRender();
+			ImGui::SetCursorPosX((ImGui::GetWindowWidth() - 80) / 2);
+			ImGui::SetCursorPosY(ImGui::GetWindowHeight() - 25);
 
-				ImGui::SetCursorPosX((ImGui::GetWindowWidth() - 80) / 2);
-				ImGui::SetCursorPosY(ImGui::GetWindowHeight() - 25);
+			if (ImGui::Button("Fullscreen")) {
+				window.ToggleFullscreen();
+			}
 
-				if (ImGui::Button("Fullscreen")) {
-					window.ToggleFullscreen();
-				}
-
-		    	ImGui::End();
-		    }
-
+			ImGui::End();
 
 			ImGui::Render();
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -95,11 +80,6 @@ int main()
 		    glfwSwapBuffers(window.GetWindow());
 
 		    glfwPollEvents();
-		}
-
-		delete currentTest;
-		if (currentTest != testMenu) {
-			delete testMenu;
 		}
 	}
 

@@ -9,8 +9,8 @@
 #include "vendor/imgui/imgui.h"
 
 #include "test_square_batch.h"
-#include "renderer.h"
-#include "vertex_buffer_layout.h"
+#include "engine/renderer.h"
+#include "engine/vertex_buffer_layout.h"
 
 
 namespace test {

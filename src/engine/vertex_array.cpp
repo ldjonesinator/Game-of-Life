@@ -3,7 +3,7 @@
 
 #include <stdlib.h>
 
-#include "vertex_array.h"
+#include "engine/vertex_array.h"
 
 VertexArray::VertexArray()
 {

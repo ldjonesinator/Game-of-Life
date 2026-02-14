@@ -2,7 +2,7 @@
 
 #include <array>
 
-#include "vertex_buffer_layout.h"
+#include "engine/vertex_buffer_layout.h"
 #include "grid_config.h"
 
 

@@ -3,9 +3,9 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include "vertex_array.h"
-#include "index_buffer.h"
-#include "shader.h"
+#include "engine/vertex_array.h"
+#include "engine/index_buffer.h"
+#include "engine/shader.h"
 
 class Renderer
 {

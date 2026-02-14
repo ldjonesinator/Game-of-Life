@@ -1,6 +1,7 @@
 #include "events.h"
 
 #include <iostream>
+#include <vector>
 
 
 Events::Events()
@@ -55,7 +56,7 @@ void Events::MouseScrollEvent(std::function<void(int)> ScrollFunc)
 	m_Scroll = 0;
 }
 
-bool Events::KeyDownEvent(std::function<void(bool, int, Timestep)> KeyFunc, int key, int direction, Timestep ts)
+bool Events::KeyDownCamEvent(std::function<void(bool, int, Timestep)> KeyFunc, int key, int direction, Timestep ts)
 {
 	if (glfwGetKey(m_Window->GetWindow(), key) == GLFW_PRESS) {
 		KeyFunc(key == KEY_LEFT || key == KEY_RIGHT, direction, ts);
@@ -63,3 +64,29 @@ bool Events::KeyDownEvent(std::function<void(bool, int, Timestep)> KeyFunc, int 
 	}
 	return false;
 }
+
+bool Events::KeyDownSpeedEvent(std::function<void(int, Timestep)> KeyFunc, int key, Timestep ts)
+{
+	if (glfwGetKey(m_Window->GetWindow(), key) == GLFW_PRESS) {
+		KeyFunc((key == KEY_SPEED_UP) * 2 - 1, ts);
+		return true;
+	}
+	return false;
+}
+
+bool Events::KeyReleasedEvent(int key)
+{
+	static std::vector<int> pressed_keys;
+	std::vector<int>::iterator it = std::find(pressed_keys.begin(), pressed_keys.end(), key);
+	
+	if (glfwGetKey(m_Window->GetWindow(), key) == GLFW_PRESS) {
+		if (it == pressed_keys.end()) {
+			pressed_keys.push_back(key);
+		}
+	} else if (it != pressed_keys.end()) {
+		pressed_keys.erase(it);
+		return true;
+	}
+	return false;
+	
+};

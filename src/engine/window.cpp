@@ -4,8 +4,8 @@
 #include <iostream>
 #include <array>
 
-#include "window.h"
-#include "debug.h"
+#include "engine/window.h"
+#include "engine/debug.h"
 
 
 Window::Window()

@@ -5,8 +5,8 @@
 #include <vector>
 #include <functional>
 
-#include "window.h"
-#include "timestep.h"
+#include "engine/window.h"
+#include "engine/timestep.h"
 
 namespace test {
 

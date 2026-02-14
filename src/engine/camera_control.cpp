@@ -2,7 +2,7 @@
 #include <iostream>
 #include <cmath>
 
-#include "camera_control.h"
+#include "engine/camera_control.h"
 
 
 CameraControl::CameraControl(float m_AspectRatio)
@@ -87,10 +87,10 @@ void CameraControl::CamEvents(std::unique_ptr<Events>& events, Timestep ts)
 	auto scroll_func = [this](int zl)
 		{ return ZoomCamera(zl); };
 
-	events->KeyDownEvent(key_func, KEY_LEFT, -1, ts);
-	events->KeyDownEvent(key_func, KEY_RIGHT, 1, ts);
-	events->KeyDownEvent(key_func, KEY_DOWN, -1, ts);
-	events->KeyDownEvent(key_func, KEY_UP, 1, ts);
+	events->KeyDownCamEvent(key_func, KEY_LEFT, -1, ts);
+	events->KeyDownCamEvent(key_func, KEY_RIGHT, 1, ts);
+	events->KeyDownCamEvent(key_func, KEY_DOWN, -1, ts);
+	events->KeyDownCamEvent(key_func, KEY_UP, 1, ts);
 
 	events->MouseScrollEvent(scroll_func);
 }

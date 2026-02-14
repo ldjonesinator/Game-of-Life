@@ -1,8 +1,8 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include "vertex_buffer.h"
-#include "vertex_buffer_layout.h"
+#include "engine/vertex_buffer.h"
+#include "engine/vertex_buffer_layout.h"
 
 VertexBuffer::VertexBuffer(const void* data, unsigned int size, bool isDynamic)
 {
