@@ -36,14 +36,19 @@ namespace test {
 		CameraControl m_CameraControl;
 
 		ImGuiIO& m_IO;
+		bool m_GuiInteraction = false;
 
 		float m_MaxFrames;
 		bool m_ShouldPause = true;
 		bool m_NextStep = false;
+		size_t m_Iterations = 0;
 
 		BatchRender m_BatchRender;
 		Cells m_Cells;
 		glm::vec4 m_CellColour;
+
+		std::vector<size_t> m_PresetData;
+		std::vector<std::string> m_PresetNames;
 
 	public:
 		TestGOL(Window* window);
@@ -54,7 +59,6 @@ namespace test {
 		void OnImGuiRender() override;
 
 	private:
-		int GetPositionIndex(double x, double y, int x_res, int y_res);
-		void MoveCamera(bool isHorz, int direction, Timestep ts);
+		void SavedShapes();
 	};
 }

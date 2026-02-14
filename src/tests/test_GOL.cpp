@@ -4,6 +4,9 @@
 #include <iostream>
 #include <stdlib.h>
 #include <array>
+#include <vector>
+#include <fstream>
+#include <string>
 
 #include "vendor/glm/glm.hpp"
 #include "vendor/glm/gtc/matrix_transform.hpp"
@@ -16,7 +19,47 @@
 #include "vertex_buffer_layout.h"
 
 
+static void GetPresetData(std::vector<std::string>& names, std::vector<size_t>& data)
+{
+	std::string line;
+	std::string value;
+	char preset_val = '#';
+	char delimiter = ',';
+	char ch;
 
+	std::ifstream file("res/presets.txt");
+	if (!file) {
+		std::cerr << "Unable to open file";
+		return;
+	}
+
+	bool isFound = false;
+	while (std::getline(file, line)) {
+		if (isFound) {
+			for (size_t i = 0; i < line.length(); i++) {
+				ch = line.at(i);
+				if (ch == delimiter) {
+					data.push_back(static_cast<size_t>(std::stoul(value)));
+					value.clear();
+				} else {
+					value += ch;
+				}
+			}
+			data.push_back(static_cast<size_t>(std::stoul(value))); // final value
+			value.clear();
+			data.push_back(COLS*ROWS+1); // to indicate the end of the list
+			
+			isFound = false;
+		}
+		// finding preset
+		if (!line.empty() && line.at(0) == preset_val) {
+			names.push_back(line.substr(1));
+			isFound = true;
+		}
+
+	}
+	file.close();
+}
 
 namespace test {
 
@@ -33,20 +76,6 @@ namespace test {
 
 		m_BatchRender.CreateSquareVertIndices();
 
-//		m_Cells.AddCell(410);
-//		m_Cells.AddCell(450);
-//		m_Cells.AddCell(490);
-//		m_Cells.AddCell(530);
-//		m_Cells.AddCell(411);
-//		m_Cells.AddCell(453);
-//		m_Cells.AddCell(489);
-//		m_Cells.AddCell(531);
-//		m_Cells.AddCell(412);
-//		m_Cells.AddCell(452);
-//		m_Cells.AddCell(529);
-//		m_Cells.AddCell(532);
-//		m_Cells.UpdateFlaggedCells();
-
 		m_VAO = std::make_unique<VertexArray>();
 		m_VAO->Bind();
 		m_VertexBuffer = std::make_unique<VertexBuffer>(nullptr, MAX_VERT * sizeof(Vertex), true);
@@ -61,6 +90,8 @@ namespace test {
 
 		m_Shader = std::make_unique<Shader>("res/shaders/Basic.shader");
 		m_Shader->Bind();
+
+		GetPresetData(m_PresetNames, m_PresetData);
 
 	}
 
@@ -86,6 +117,7 @@ namespace test {
 
 		if ((frame > 1.0f / m_MaxFrames && !m_ShouldPause) || m_NextStep) {
 			m_Cells.SimulateCells();
+			m_Iterations ++;
 			frame = 0.0f;
 		}
 
@@ -108,15 +140,19 @@ namespace test {
 		auto mouseFunc = [this](double x, double y, CameraControl& cc)
 		{ return m_BatchRender.GetPositionIndex(x, y, cc); };
 
-		index = m_Events->MouseDownEvent(mouseFunc, GLFW_MOUSE_BUTTON_LEFT, m_CameraControl);
-		if (index >= 0) {
-			m_Cells.AddCell(index);
-			m_Cells.UpdateFlaggedCells();
-		}
-		index = m_Events->MouseDownEvent(mouseFunc, GLFW_MOUSE_BUTTON_RIGHT, m_CameraControl);
-		if (index >= 0) {
-			m_Cells.RemoveCell(index);
-			m_Cells.UpdateFlaggedCells();
+		if (m_GuiInteraction <= 0) {
+			index = m_Events->MouseDownEvent(mouseFunc, GLFW_MOUSE_BUTTON_LEFT, m_CameraControl);
+			if (index >= 0) {
+				m_Cells.AddCell(index);
+				m_Cells.UpdateFlaggedCells();
+				m_Iterations = 0;
+			}
+			index = m_Events->MouseDownEvent(mouseFunc, GLFW_MOUSE_BUTTON_RIGHT, m_CameraControl);
+			if (index >= 0) {
+				m_Cells.RemoveCell(index);
+				m_Cells.UpdateFlaggedCells();
+				m_Iterations = 0;
+			}
 		}
 
 		m_CameraControl.CamEvents(m_Events, ts);
@@ -126,18 +162,66 @@ namespace test {
 
 	void TestGOL::OnImGuiRender()
 	{
-	    ImGui::Text("Full Cell Count: %ld", m_Cells.GetFullCellCount());
+		ImGuiIO& io = ImGui::GetIO();
+		m_GuiInteraction = io.WantCaptureMouse;
+		glm::ivec2 index = m_BatchRender.GetIndexValues();
+	    ImGui::Text("Iterations: %ld | Populated Cells: %ld", m_Iterations, m_Cells.GetFullCellCount());
+		ImGui::Text("Row: %d Column: %d | Index: %d", index.y + 1, index.x + 1, index.x + index.y * COLS);
 
-//	    ImGui::SliderFloat2("Translation", &m_Translation.x, -1600.0f, 0);
 	    ImGui::SliderFloat("Speed", &m_MaxFrames, FRAME_LOWER, FRAME_UPPER);
 
+		if (ImGui::Button("Clear")) {
+			m_Cells.ClearCells();
+			m_Iterations = 0;
+		}
+		ImGui::SameLine();
 	    ImGui::Checkbox("Pause", &m_ShouldPause);
 	    ImGui::SameLine();
 	    m_NextStep = ImGui::Button("Next Step");
 	    ImGui::ColorEdit4("Cell Colour", &m_CellColour.x);
 
-	    ImGui::Text("Application average %.1f ms/frame (%.0f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+	    ImGui::Text("Application average %.1f ms/frame (%.0f FPS)", 1000.0f / io.Framerate, io.Framerate);
 
+		SavedShapes();
 	}
 
+
+	void TestGOL::SavedShapes()
+	{
+		size_t start_i = (COLS + ROWS * COLS) / 2;
+		ImGui::Text(" ");
+		ImGui::Text(" ");
+		ImGui::Text("Presets:");
+		
+		size_t line_length = 0;
+		size_t count;
+		for (size_t i = 0; i < m_PresetNames.size(); i++) {
+			line_length += m_PresetNames[i].length();
+			
+			if (ImGui::Button(m_PresetNames[i].c_str())) {
+				m_Iterations = 0;
+				m_CameraControl.CentreCamera();
+				count = 0;
+				for (size_t value : m_PresetData) {
+					if (value == COLS*ROWS+1) {
+						count ++;
+					} else if (count == i) {
+						m_Cells.AddCell(start_i + value);
+						
+					} else if (count > i) {
+						break;
+					}
+				}
+				m_Cells.UpdateFlaggedCells();
+			}
+
+			if (line_length < 34) {
+				ImGui::SameLine();
+			} else {
+				line_length = 0;
+			}
+		}
+		
+		ImGui::SameLine();
+	}
 }

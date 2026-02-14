@@ -22,12 +22,17 @@ private:
 	std::array<bool, TILES> m_FlaggedCells;
 	size_t m_IndexCount;
 public:
+
 	Cells();
 	~Cells();
+
+	void ClearCells();
 	void AddCell(size_t ID);
 	void RemoveCell(size_t ID);
+
 	void UpdateFlaggedCells();
 	void SimulateCells();
+	
 	void RenderCells(BatchRender* render, glm::vec4 colour);
 	size_t GetFullCellCount() const;
 private:

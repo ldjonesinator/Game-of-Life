@@ -40,6 +40,7 @@ public:
     void WindowResize();
 
     void CamEvents(std::unique_ptr<Events>& events, Timestep ts);
+    void CentreCamera() { m_CameraPosition = { WORLD_X / 2, WORLD_Y / 2, 0.0f }; }
 
     Camera GetCamera() { return m_Camera; }
     glm::vec2 GetResolution() { return {m_ResX, m_ResY}; }

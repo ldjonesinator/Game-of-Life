@@ -4,18 +4,25 @@
 
 #include "batch_render.h"
 
+
 Cells::Cells()
 	: m_IndexCount(0)
+{
+	ClearCells();
+}
+
+Cells::~Cells()
+{}
+
+void Cells::ClearCells()
 {
 	for (size_t i = 0; i < TILES; i ++) {
 		m_Cells[i] = 0;
 		m_EmptyCells[i] = 0;
 		m_FlaggedCells[i] = false;
 	}
+	m_IndexCount = 0;
 }
-
-Cells::~Cells()
-{}
 
 // returns true if the neighbour is on the other side of the screen
 static bool isOnOppositeEdge(int id, int nbour_id)

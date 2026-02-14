@@ -93,10 +93,10 @@ int BatchRender::GetPositionIndex(double x, double y, CameraControl& c_ctrl)
     float worldX = ((x - res.x / 2) * zoom) + cam_pos.x;
     float worldY = ((y - res.y / 2) * zoom) + cam_pos.y;
 
-    int x_index = (int)(worldX / size);
-    int y_index = (int)(worldY / size);
+    m_IndexX = (int)(worldX / size);
+    m_IndexY = (int)(worldY / size);
 
-    return x_index + y_index * COLS;
+    return m_IndexX + m_IndexY * COLS;
 }
 
 void BatchRender::SubData(unsigned int size, Vertex* vert_p)

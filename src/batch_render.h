@@ -17,6 +17,9 @@ private:
 	unsigned int m_IndexCount;
 	Vertex* m_Buffer;
 
+	int m_IndexX = 0;
+	int m_IndexY = 0;
+
 public:
 	BatchRender();
 	~BatchRender();
@@ -28,6 +31,7 @@ public:
 	unsigned int GetSquareVertCount();
 	void UpdateFullColour(unsigned int i, glm::vec4 colour);
 	int GetPositionIndex(double x, double y, CameraControl& c_ctrl);
+	glm::ivec2 GetIndexValues() { return {m_IndexX, m_IndexY}; }
 
 	void SubData(unsigned int size, Vertex* vert_p);
 	void DrawBatchRender();

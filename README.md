@@ -15,3 +15,5 @@ For a space that is populated:
 For a space that is empty:
 
 - Each cell with three neighbors becomes populated.
+
+## Controls:
