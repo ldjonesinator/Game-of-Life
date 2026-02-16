@@ -143,8 +143,6 @@ void GOL::OnUpdate(Timestep ts)
 
 	m_BatchRender.DrawBatchRender();
 
-	m_Events->EventChecks();
-
 	auto mouseFunc = [this](double x, double y, CameraControl& cc)
 	{ return m_BatchRender.GetPositionIndex(x, y, cc); };
 
@@ -190,7 +188,11 @@ void GOL::OnImGuiRender()
 	ImGuiIO& io = ImGui::GetIO();
 	m_GuiInteraction = io.WantCaptureMouse;
 	glm::ivec2 index = m_BatchRender.GetIndexValues();
-	ImGui::Text("Iterations: %ld | Populated Cells: %ld", m_Iterations, m_Cells.GetFullCellCount());
+	size_t cell_count = m_Cells.GetFullCellCount();
+	if (cell_count == 0) {
+		m_Iterations = 0;
+	}
+	ImGui::Text("Iterations: %ld | Populated Cells: %ld", m_Iterations, cell_count);
 	ImGui::Text("Row: %d Column: %d | Index: %d", index.y + 1, index.x + 1, index.x + index.y * COLS);
 
 	ImGui::SliderFloat("Speed", &m_MaxFrames, FRAME_LOWER, FRAME_UPPER);

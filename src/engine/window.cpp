@@ -57,7 +57,7 @@ void Window::InitialiseWindow(float scale, bool VSync)
 	glViewport(0, 0, m_WinWidth, m_WinHeight);
 
 	// VSync is 1
-	glfwSwapInterval(0);
+	glfwSwapInterval(VSync);
 	glfwSwapBuffers(m_Window);
 
 

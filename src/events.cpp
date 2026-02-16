@@ -18,16 +18,17 @@ void Events::Init(Window* window)
 }
 
 
-void Events::EventChecks()
+std::array<double, 2> Events::GetMousePos()
 {
 	glfwGetCursorPos(m_Window->GetWindow(), &m_MouseX, &m_MouseY);
 	m_MouseY = m_Window->GetCurrentSize()[1] - m_MouseY;
-
+	return std::array<double, 2>{m_MouseX, m_MouseY};
 }
 
 // returns true if the button is down
 int Events::MouseDownEvent(std::function<int(double, double, CameraControl&)> MouseFunc, int btn, CameraControl& c_ctrl)
 {
+	GetMousePos();
 	int state = glfwGetMouseButton(m_Window->GetWindow(), btn);
 	if (state == GLFW_PRESS) {
 		// inverts the mouseY origin

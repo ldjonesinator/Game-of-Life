@@ -40,8 +40,7 @@ public:
 
 	void Init(Window* window);
 
-	void EventChecks();
-	std::array<double, 2> GetMousePos() { return std::array<double, 2>{m_MouseX, m_MouseY}; }
+	std::array<double, 2> GetMousePos();
 	
 	int MouseDownEvent(std::function<int(double, double, CameraControl&)> MouseFunc, int btn, CameraControl& c_ctrl);
 	void MouseScrollEvent(std::function<void(int)>);
