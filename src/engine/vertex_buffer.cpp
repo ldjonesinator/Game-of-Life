@@ -1,6 +1,3 @@
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-
 #include "engine/vertex_buffer.h"
 #include "engine/vertex_buffer_layout.h"
 
@@ -19,14 +16,4 @@ VertexBuffer::VertexBuffer(const void* data, unsigned int size, bool isDynamic)
 VertexBuffer::~VertexBuffer()
 {
 	glDeleteBuffers(1, &m_RendererID);
-}
-
-void VertexBuffer::Bind() const
-{
-	glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
-}
-
-void VertexBuffer::Unbind() const
-{
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }

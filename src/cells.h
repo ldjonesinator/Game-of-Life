@@ -34,8 +34,8 @@ public:
 	void SimulateCells();
 	
 	void RenderCells(BatchRender* render, glm::vec4 colour);
-	size_t GetFullCellCount() const;
+	size_t GetFullCellCount() const { return m_IndexCount; }
 private:
-	bool CheckNeighbour(size_t ID, int x, int y);
-	unsigned int CheckNeighbours(size_t ID);
+	bool CheckNeighbour(size_t ID, int x, int y, bool shouldFlag);
+	unsigned int CheckNeighbours(size_t ID, bool shouldFlag);
 };

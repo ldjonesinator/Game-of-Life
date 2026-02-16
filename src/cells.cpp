@@ -14,6 +14,7 @@ Cells::Cells()
 Cells::~Cells()
 {}
 
+/** Resets every cell so they have no neighbours and none are flagged  */
 void Cells::ClearCells()
 {
 	for (size_t i = 0; i < TILES; i ++) {
@@ -24,7 +25,10 @@ void Cells::ClearCells()
 	m_IndexCount = 0;
 }
 
-// returns true if the neighbour is on the other side of the screen
+
+/**
+ * @return true if the neighbour cell is on the other side of the screen (horizontally)
+ */
 static bool isOnOppositeEdge(int id, int nbour_id)
 {
 	if (id % COLS == 0) { // left edge
@@ -39,7 +43,10 @@ static bool isOnOppositeEdge(int id, int nbour_id)
 	return false;
 }
 
-bool Cells::CheckNeighbour(size_t ID, int x, int y)
+/**
+ * @return true of that cell is populated
+ */
+bool Cells::CheckNeighbour(size_t ID, int x, int y, bool shouldFlag)
 {
     int base = static_cast<int>(ID);
     int nbour_id = base + x + (y * COLS);
@@ -47,7 +54,7 @@ bool Cells::CheckNeighbour(size_t ID, int x, int y)
     if (!isOnOppositeEdge(base, nbour_id) && nbour_id >= 0 &&
     	nbour_id < static_cast<int>(TILES) && static_cast<size_t>(nbour_id) != ID)
     {
-        m_FlaggedCells[nbour_id] = true;
+        m_FlaggedCells[nbour_id] = shouldFlag ? true : m_FlaggedCells[nbour_id];
         if (m_Cells[nbour_id] != 0) {
             return true;
         }
@@ -55,29 +62,32 @@ bool Cells::CheckNeighbour(size_t ID, int x, int y)
     return false;
 }
 
-
-unsigned int Cells::CheckNeighbours(size_t ID)
+/** Checks all 8 cells around to see if any are populated
+ * @return how many populated neighbouring cells there are
+ * @param shouldFlag false if you don't want to change the flagged state of neighbours
+ */
+unsigned int Cells::CheckNeighbours(size_t ID, bool shouldFlag)
 {
 	unsigned int count = 0;
 	for (int x = -1; x < 2; x++) {
 		for (int y = -1; y < 2; y++) {
 			if (x == 0 && y == 0) continue;
 
-			if (CheckNeighbour(ID, x, y)) {
+			if (CheckNeighbour(ID, x, y, shouldFlag)) {
 				count ++;
 			}
 		}
 	}
-	m_FlaggedCells[ID] = true;
+	m_FlaggedCells[ID] = shouldFlag ? true : m_FlaggedCells[ID];
 	return count;
 }
 
-
+/** Adds a populated cell and flags it and its neighbours */
 void Cells::AddCell(size_t ID)
 {
 	if (ID < TILES) {
 		if (m_Cells[ID] == 0) {
-			CheckNeighbours(ID);
+			CheckNeighbours(ID, true);
 			m_EmptyCells[ID] = 0;
 			m_Cells[ID] = 1;
 			m_IndexCount ++;
@@ -87,11 +97,12 @@ void Cells::AddCell(size_t ID)
 	}
 }
 
+/** Removes a populated cell and flags it and its neighbouring cells */
 void Cells::RemoveCell(size_t ID)
 {
 	if (ID < TILES) {
 		if (m_Cells[ID] != 0) {
-		    CheckNeighbours(ID);
+		    CheckNeighbours(ID, true);
 		    m_Cells[ID] = 0;
 		    m_EmptyCells[ID] = 0;
 		    m_IndexCount --;
@@ -101,20 +112,22 @@ void Cells::RemoveCell(size_t ID)
 	}
 }
 
+/** Updates the correct neighbour count of each flagged cell */
 void Cells::UpdateFlaggedCells()
 {
 	for (size_t i = 0; i < TILES; i ++) {
 		if (m_FlaggedCells[i]) {
 			if (m_Cells[i] != 0) {
-				m_Cells[i] = CheckNeighbours(i) + 1;
+				m_Cells[i] = CheckNeighbours(i, false) + 1;
 			} else {
-				m_EmptyCells[i] = CheckNeighbours(i);
+				m_EmptyCells[i] = CheckNeighbours(i, false);
 			}
 		}
 		m_FlaggedCells[i] = false;
 	}
 }
 
+/** Applies the rules of the game of life */
 void Cells::SimulateCells()
 {
 	// remember that m_Cells contains the count of neighbours + 1 (itself)
@@ -129,6 +142,7 @@ void Cells::SimulateCells()
 	UpdateFlaggedCells();
 }
 
+/** Updates the colour of the populated cells */
 void Cells::RenderCells(BatchRender* render, glm::vec4 colour)
 {
 	for (size_t i = 0; i < TILES; i ++) {
@@ -136,9 +150,4 @@ void Cells::RenderCells(BatchRender* render, glm::vec4 colour)
 			render->UpdateFullColour(i * VERTICES, colour);
 		}
 	}
-}
-
-size_t Cells::GetFullCellCount() const
-{
-	return m_IndexCount;
 }

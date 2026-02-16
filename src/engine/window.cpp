@@ -8,9 +8,9 @@
 #include "engine/debug.h"
 
 
-Window::Window()
+Window::Window(bool VSync)
 {
-	InitialiseWindow(WINDOWED_SCALE);
+	InitialiseWindow(WINDOWED_SCALE, VSync);
 }
 
 Window::~Window()
@@ -19,7 +19,7 @@ Window::~Window()
 	glfwTerminate();
 }
 
-void Window::InitialiseWindow(float scale)
+void Window::InitialiseWindow(float scale, bool VSync)
 {
 	if (!glfwInit()) {
 		std::cerr << "Failed to initialize GLFW" << std::endl;
@@ -57,32 +57,18 @@ void Window::InitialiseWindow(float scale)
 	glViewport(0, 0, m_WinWidth, m_WinHeight);
 
 	// VSync is 1
-	glfwSwapInterval(1);
+	glfwSwapInterval(0);
 	glfwSwapBuffers(m_Window);
 
 
 	m_isValid = true;
 }
 
-bool Window::IsValid() const
-{
-	return m_isValid;
-}
-
-GLFWwindow* Window::GetWindow() const
-{
-	return m_Window;
-}
 
 std::array<int, 2> Window::GetCurrentSize()
 {
 	glfwGetFramebufferSize(m_Window, &m_CurWidth, &m_CurHeight);
 	return std::array<int, 2>{m_CurWidth, m_CurHeight};
-}
-
-std::array<int, 2> Window::GetMinSize()
-{
-	return std::array<int, 2>{m_WinWidth, m_WinHeight};
 }
 
 static void framebuffer_size_callback(GLFWwindow* window, int width, int height)

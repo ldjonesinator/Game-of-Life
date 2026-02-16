@@ -39,8 +39,10 @@ public:
 	~Events();
 
 	void Init(Window* window);
+
 	void EventChecks();
-	std::array<double, 2> GetMousePos();
+	std::array<double, 2> GetMousePos() { return std::array<double, 2>{m_MouseX, m_MouseY}; }
+	
 	int MouseDownEvent(std::function<int(double, double, CameraControl&)> MouseFunc, int btn, CameraControl& c_ctrl);
 	void MouseScrollEvent(std::function<void(int)>);
 	bool KeyDownCamEvent(std::function<void(bool, int, Timestep)> KeyFunc, int key, int direction, Timestep ts);

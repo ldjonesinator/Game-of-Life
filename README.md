@@ -17,3 +17,13 @@ For a space that is empty:
 - Each cell with three neighbors becomes populated.
 
 ## Controls:
+- WASD to move around
+- Left click to add a cell. Right click to Remove the cell
+- Use the mouse scroll to zoom in and out
+- Backspace will clear the screen and reset the camera to the middle
+
+- Spacebar will start/stop the simulation
+- Up and Down arrow keys will change the speed of the simulation
+- Enter will cycle to the next iteration
+
+If you scroll down the Tools window you can see a couple presets that you can add to the simulation. Some of them are really cool so check them out!

@@ -51,10 +51,6 @@ void BatchRender::CreateSquareVertIndices()
 	}
 }
 
-const unsigned int* BatchRender::GetIndices() const {
-    return m_SquareIndices.data();
-}
-
 void BatchRender::CreateBatchRender(Vertex* vertices_p, glm::vec4 colour)
 {
 	m_IndexCount = 0;
@@ -67,11 +63,6 @@ void BatchRender::CreateBatchRender(Vertex* vertices_p, glm::vec4 colour)
 			m_IndexCount += INDICES;
 		}
 	}
-}
-
-unsigned int BatchRender::GetSquareVertCount()
-{
-	return VERTICES * (m_IndexCount / INDICES);
 }
 
 void BatchRender::UpdateFullColour(unsigned int i, glm::vec4 colour)
@@ -97,14 +88,4 @@ int BatchRender::GetPositionIndex(double x, double y, CameraControl& c_ctrl)
     m_IndexY = (int)(worldY / size);
 
     return m_IndexX + m_IndexY * COLS;
-}
-
-void BatchRender::SubData(unsigned int size, Vertex* vert_p)
-{
-	glBufferSubData(GL_ARRAY_BUFFER, 0, size, vert_p);
-}
-
-void BatchRender::DrawBatchRender()
-{
-	glDrawElements(GL_TRIANGLES, m_IndexCount, GL_UNSIGNED_INT, nullptr);
 }

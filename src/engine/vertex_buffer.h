@@ -1,5 +1,8 @@
 #pragma once
 
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+
 class VertexBuffer
 {
 private:
@@ -8,6 +11,6 @@ public:
 	VertexBuffer(const void* data, unsigned int size, bool isDynamic);
 	~VertexBuffer();
 
-	void Bind() const;
-	void Unbind() const;
+	void Bind() const { glBindBuffer(GL_ARRAY_BUFFER, m_RendererID); }
+	void Unbind() const { glBindBuffer(GL_ARRAY_BUFFER, 0); }
 };

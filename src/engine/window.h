@@ -20,12 +20,16 @@ private:
 	int m_xPos, m_yPos;
 
 public:
-	Window();
+	/** @param VSync: set true when you want the monitor's refresh rate */
+	Window(bool VSync);
 	~Window();
-	void InitialiseWindow(float scale);
-	bool IsValid() const;
-	GLFWwindow* GetWindow() const;
+	void InitialiseWindow(float scale, bool VSync);
+
+	bool IsValid() const { return m_isValid; };
+
+	GLFWwindow* GetWindow() const { return m_Window; }
 	std::array<int, 2> GetCurrentSize();
-	std::array<int, 2> GetMinSize();
+	std::array<int, 2> GetMinSize() { return std::array<int, 2>{m_WinWidth, m_WinHeight}; }
+
 	void ToggleFullscreen();
 };

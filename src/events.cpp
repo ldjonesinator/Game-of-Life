@@ -25,11 +25,6 @@ void Events::EventChecks()
 
 }
 
-std::array<double, 2> Events::GetMousePos()
-{
-	return std::array<double, 2>{m_MouseX, m_MouseY};
-}
-
 // returns true if the button is down
 int Events::MouseDownEvent(std::function<int(double, double, CameraControl&)> MouseFunc, int btn, CameraControl& c_ctrl)
 {
